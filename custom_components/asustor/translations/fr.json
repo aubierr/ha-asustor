@@ -1,0 +1,23 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "NAS ASUSTOR (SNMP)",
+        "description": "Activez d'abord SNMP dans ADM (Services > SNMP).",
+        "data": { "host": "Hôte", "name": "Nom", "port": "Port", "community": "Communauté SNMP" }
+      }
+    },
+    "error": { "cannot_connect": "Impossible de joindre le NAS en SNMP (vérifiez l'hôte, la communauté et que SNMP est activé)." },
+    "abort": { "already_configured": "Ce NAS est déjà configuré." }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": { "name": "Utilisation CPU" },
+      "memory_usage": { "name": "Utilisation mémoire" },
+      "load_1": { "name": "Charge 1 min" },
+      "load_5": { "name": "Charge 5 min" },
+      "load_15": { "name": "Charge 15 min" },
+      "uptime": { "name": "Durée de fonctionnement" }
+    }
+  }
+}
