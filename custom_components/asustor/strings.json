@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Enter the SNMP v3 user configured in ADM. Passphrases need at least 8 characters.",
+        "description": "Enter the SNMP v3 user and password set in ADM (Services > SNMP). Leave the protocols on Automatic: they are detected for you.",
         "data": {
           "username": "Username",
           "auth_protocol": "Authentication protocol",
-          "auth_key": "Authentication passphrase",
+          "auth_key": "Password",
           "priv_protocol": "Encryption protocol",
-          "priv_key": "Encryption passphrase"
+          "priv_key": "Encryption password (leave empty to reuse the password)"
         }
       }
     },
     "error": {
       "cannot_connect": "Cannot reach the NAS over SNMP. Check the host, port and credentials, and that SNMP is enabled.",
       "invalid_auth": "The NAS rejected the SNMP v3 credentials.",
-      "key_too_short": "Passphrases must be at least 8 characters.",
+      "key_too_short": "The password must be at least 8 characters.",
       "priv_requires_auth": "Encryption requires an authentication protocol.",
       "already_configured": "Another entry already uses this host."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automatic",
         "none": "None",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automatic",
         "none": "None",
         "des": "DES",
         "3des": "3DES",

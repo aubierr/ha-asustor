@@ -53,6 +53,8 @@ class FakeSnmp:
         self.error: Exception | None = None  # raised by every request when set
         self.auth: Any = None  # credentials the integration built (CommunityData / UsmUserData)
         self.requests = 0
+        self.timeouts: list = []  # timeout passed by each client the integration created
+        self.v3_accepts: tuple[str, str] | None = None  # (auth, priv) the fake agent accepts, or None = any
 
     async def get(self, oids: list[str]) -> dict[str, Any]:
         self._check()
@@ -66,6 +68,13 @@ class FakeSnmp:
         self.requests += 1
         if self.error is not None:
             raise self.error
+        if self.v3_accepts is not None and self.auth.__class__.__name__ == "UsmUserData":
+            from custom_components.asustor.snmp import AUTH_PROTOCOLS, PRIV_PROTOCOLS
+
+            auth, priv = self.v3_accepts
+            if (self.auth.authentication_protocol != AUTH_PROTOCOLS[auth]
+                    or self.auth.privacy_protocol != PRIV_PROTOCOLS[priv]):
+                raise SnmpAuthError("Wrong SNMP PDU digest")
 
     # --- test helpers -------------------------------------------------------------------
     def set_get(self, oid: str, kind: str, value: Any) -> None:
@@ -91,8 +100,9 @@ def fake_snmp():
     """Patch the SNMP client + engine used by the integration and its config flow."""
     fake = FakeSnmp()
 
-    def factory(engine, host, port, auth):
+    def factory(engine, host, port, auth, **kwargs):
         fake.auth = auth
+        fake.timeouts.append(kwargs.get("timeout"))
         return fake
 
     with (

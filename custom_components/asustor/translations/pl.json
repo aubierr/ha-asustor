@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Podaj użytkownika SNMP v3 skonfigurowanego w ADM. Hasła muszą mieć co najmniej 8 znaków.",
+        "description": "Podaj użytkownika i hasło SNMP v3 ustawione w ADM (Usługi > SNMP). Pozostaw protokoły na Automatycznie: zostaną wykryte za Ciebie.",
         "data": {
           "username": "Nazwa użytkownika",
           "auth_protocol": "Protokół uwierzytelniania",
-          "auth_key": "Hasło uwierzytelniania",
+          "auth_key": "Hasło",
           "priv_protocol": "Protokół szyfrowania",
-          "priv_key": "Hasło szyfrowania"
+          "priv_key": "Hasło szyfrowania (puste = takie samo jak hasło)"
         }
       }
     },
     "error": {
       "cannot_connect": "Nie można połączyć się z NAS przez SNMP. Sprawdź host, port i dane logowania oraz czy SNMP jest włączony.",
       "invalid_auth": "NAS odrzucił dane logowania SNMP v3.",
-      "key_too_short": "Hasła muszą mieć co najmniej 8 znaków.",
+      "key_too_short": "Hasło musi mieć co najmniej 8 znaków.",
       "priv_requires_auth": "Szyfrowanie wymaga protokołu uwierzytelniania.",
       "already_configured": "Inny wpis już używa tego hosta."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automatycznie",
         "none": "Brak",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automatycznie",
         "none": "Brak",
         "des": "DES",
         "3des": "3DES",

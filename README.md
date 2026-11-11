@@ -70,7 +70,11 @@ Dans ADM : **Services → SNMP**, activer le service et définir une communauté
 ### SNMP v2c ou v3
 
 - **v2c** : une communauté (mot de passe en clair sur le réseau). Simple, adapté à un réseau local de confiance.
-- **v3** : un utilisateur avec **authentification** (MD5, SHA, SHA-224/256/384/512) et **chiffrement** (DES, 3DES, AES-128/192/256). Créez l'utilisateur dans ADM (*Services → SNMP*), puis choisissez « v3 » à l'ajout de l'intégration. Les phrases secrètes font au moins 8 caractères.
+- **v3** : un utilisateur et un mot de passe, avec authentification et chiffrement.
+
+**Avec ADM** (*Services → SNMP*), cochez *SNMP Service V3* et renseignez un **nom d'utilisateur** et un **mot de passe** (8 caractères minimum). ADM ne demande ni protocole ni second mot de passe : dans Home Assistant, choisissez « v3 », saisissez ces deux valeurs et laissez les protocoles sur **Automatique**. L'intégration essaie les combinaisons courantes (authentification SHA ou MD5, chiffrement AES, DES ou aucun) avec ce mot de passe et retient celle que votre NAS accepte. Le chiffrement réutilise le mot de passe, sauf si vous en indiquez un autre.
+
+Pour un autre agent SNMP v3, vous pouvez imposer les protocoles (MD5, SHA, SHA-224/256/384/512 ; DES, 3DES, AES-128/192/256).
 
 Si les identifiants v3 sont refusés plus tard, Home Assistant propose de les ressaisir (ré-authentification). Avec v2c, une mauvaise communauté ressemble à un NAS éteint : aucune ré-authentification n'est possible.
 
@@ -150,6 +154,6 @@ Ils couvrent la lecture SNMP (v2c et v3), les appareils et entités, les capteur
 
 ## Licence
 
-Version 0.1.0-beta.5 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.6 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
 
 > ASUSTOR et son logo sont des marques de leur propriétaire (ASUSTOR Inc.). Ce projet est indépendant et n'est ni affilié ni approuvé par ASUSTOR ; le logo n'est utilisé que pour identifier les NAS compatibles.

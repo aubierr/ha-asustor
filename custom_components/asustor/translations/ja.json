@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "ADM で設定した SNMP v3 ユーザーを入力してください。パスフレーズは 8 文字以上が必要です。",
+        "description": "ADM（サービス > SNMP）で設定した SNMP v3 のユーザーとパスワードを入力してください。プロトコルは「自動」のままで構いません（自動検出されます）。",
         "data": {
           "username": "ユーザー名",
           "auth_protocol": "認証プロトコル",
-          "auth_key": "認証パスフレーズ",
+          "auth_key": "パスワード",
           "priv_protocol": "暗号化プロトコル",
-          "priv_key": "暗号化パスフレーズ"
+          "priv_key": "暗号化パスワード（空欄の場合は上のパスワードを使用）"
         }
       }
     },
     "error": {
       "cannot_connect": "SNMP で NAS に接続できません。ホスト、ポート、認証情報、SNMP が有効かどうかを確認してください。",
       "invalid_auth": "NAS が SNMP v3 の認証情報を拒否しました。",
-      "key_too_short": "パスフレーズは 8 文字以上にしてください。",
+      "key_too_short": "パスワードは 8 文字以上にしてください。",
       "priv_requires_auth": "暗号化には認証プロトコルが必要です。",
       "already_configured": "このホストは別のエントリで既に使用されています。"
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "自動",
         "none": "なし",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "自動",
         "none": "なし",
         "des": "DES",
         "3des": "3DES",

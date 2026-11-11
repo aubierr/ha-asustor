@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "ADM에서 설정한 SNMP v3 사용자를 입력하세요. 암호 문구는 8자 이상이어야 합니다.",
+        "description": "ADM(서비스 > SNMP)에서 설정한 SNMP v3 사용자와 비밀번호를 입력하세요. 프로토콜은 '자동'으로 두면 알아서 감지됩니다.",
         "data": {
           "username": "사용자 이름",
           "auth_protocol": "인증 프로토콜",
-          "auth_key": "인증 암호 문구",
+          "auth_key": "비밀번호",
           "priv_protocol": "암호화 프로토콜",
-          "priv_key": "암호화 암호 문구"
+          "priv_key": "암호화 비밀번호(비워 두면 위 비밀번호와 동일)"
         }
       }
     },
     "error": {
       "cannot_connect": "SNMP로 NAS에 연결할 수 없습니다. 호스트, 포트, 자격 증명과 SNMP 활성화 여부를 확인하세요.",
       "invalid_auth": "NAS가 SNMP v3 자격 증명을 거부했습니다.",
-      "key_too_short": "암호 문구는 8자 이상이어야 합니다.",
+      "key_too_short": "비밀번호는 8자 이상이어야 합니다.",
       "priv_requires_auth": "암호화에는 인증 프로토콜이 필요합니다.",
       "already_configured": "다른 항목이 이미 이 호스트를 사용 중입니다."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "자동",
         "none": "없음",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "자동",
         "none": "없음",
         "des": "DES",
         "3des": "3DES",

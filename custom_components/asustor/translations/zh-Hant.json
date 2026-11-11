@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "輸入在 ADM 中設定的 SNMP v3 使用者。密碼短語至少需要 8 個字元。",
+        "description": "輸入在 ADM（服務 > SNMP）中設定的 SNMP v3 使用者與密碼。通訊協定保持「自動」即可，系統會自動偵測。",
         "data": {
           "username": "使用者名稱",
           "auth_protocol": "驗證通訊協定",
-          "auth_key": "驗證密碼短語",
+          "auth_key": "密碼",
           "priv_protocol": "加密通訊協定",
-          "priv_key": "加密密碼短語"
+          "priv_key": "加密密碼（留空則與上方密碼相同）"
         }
       }
     },
     "error": {
       "cannot_connect": "無法透過 SNMP 連線至 NAS。請檢查主機、連接埠與憑證，以及 SNMP 是否已啟用。",
       "invalid_auth": "NAS 拒絕了 SNMP v3 憑證。",
-      "key_too_short": "密碼短語至少需要 8 個字元。",
+      "key_too_short": "密碼至少需要 8 個字元。",
       "priv_requires_auth": "加密需要驗證通訊協定。",
       "already_configured": "其他項目已在使用此主機。"
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "自動",
         "none": "無",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "自動",
         "none": "無",
         "des": "DES",
         "3des": "3DES",

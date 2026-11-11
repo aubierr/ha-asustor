@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Ange SNMP v3-användaren som är konfigurerad i ADM. Lösenfraser måste vara minst 8 tecken.",
+        "description": "Ange SNMP v3-användaren och lösenordet som är inställda i ADM (Tjänster > SNMP). Låt protokollen stå på Automatiskt: de identifieras åt dig.",
         "data": {
           "username": "Användarnamn",
           "auth_protocol": "Autentiseringsprotokoll",
-          "auth_key": "Autentiseringslösenfras",
+          "auth_key": "Lösenord",
           "priv_protocol": "Krypteringsprotokoll",
-          "priv_key": "Krypteringslösenfras"
+          "priv_key": "Krypteringslösenord (tomt = samma som lösenordet)"
         }
       }
     },
     "error": {
       "cannot_connect": "Det går inte att nå NAS via SNMP. Kontrollera värd, port och inloggningsuppgifter samt att SNMP är aktiverat.",
       "invalid_auth": "NAS avvisade SNMP v3-uppgifterna.",
-      "key_too_short": "Lösenfraser måste vara minst 8 tecken.",
+      "key_too_short": "Lösenordet måste vara minst 8 tecken.",
       "priv_requires_auth": "Kryptering kräver ett autentiseringsprotokoll.",
       "already_configured": "En annan post använder redan den här värden."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automatiskt",
         "none": "Ingen",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automatiskt",
         "none": "Ingen",
         "des": "DES",
         "3des": "3DES",

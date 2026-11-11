@@ -115,19 +115,27 @@ class AsustorSnmp:
     """SNMP v2c/v3 client for one NAS."""
 
     def __init__(
-        self, engine: SnmpEngine, host: str, port: int, auth: CommunityData | UsmUserData
+        self,
+        engine: SnmpEngine,
+        host: str,
+        port: int,
+        auth: CommunityData | UsmUserData,
+        timeout: float = 5,
+        retries: int = 1,
     ) -> None:
         self._engine = engine
         self._host = host
         self._port = port
         self._auth = auth
+        self._timeout = timeout
+        self._retries = retries
         self._target: UdpTransportTarget | None = None
         self._ctx = ContextData()
 
     async def _transport(self) -> UdpTransportTarget:
         if self._target is None:
             self._target = await UdpTransportTarget.create(
-                (self._host, self._port), timeout=5, retries=1
+                (self._host, self._port), timeout=self._timeout, retries=self._retries
             )
         return self._target
 

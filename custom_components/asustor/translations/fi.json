@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Anna ADM:ssä määritetty SNMP v3 -käyttäjä. Salalauseiden on oltava vähintään 8 merkkiä.",
+        "description": "Anna ADM:ssä (Palvelut > SNMP) asetettu SNMP v3 -käyttäjä ja salasana. Jätä protokollat Automaattinen-tilaan: ne tunnistetaan puolestasi.",
         "data": {
           "username": "Käyttäjänimi",
           "auth_protocol": "Todennusprotokolla",
-          "auth_key": "Todennuksen salalause",
+          "auth_key": "Salasana",
           "priv_protocol": "Salausprotokolla",
-          "priv_key": "Salauksen salalause"
+          "priv_key": "Salauksen salasana (tyhjä = sama kuin salasana)"
         }
       }
     },
     "error": {
       "cannot_connect": "NAS:iin ei saada yhteyttä SNMP:llä. Tarkista isäntä, portti ja tunnistetiedot sekä että SNMP on käytössä.",
       "invalid_auth": "NAS hylkäsi SNMP v3 -tunnistetiedot.",
-      "key_too_short": "Salalauseiden on oltava vähintään 8 merkkiä.",
+      "key_too_short": "Salasanan on oltava vähintään 8 merkkiä.",
       "priv_requires_auth": "Salaus vaatii todennusprotokollan.",
       "already_configured": "Toinen merkintä käyttää jo tätä isäntää."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automaattinen",
         "none": "Ei mitään",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automaattinen",
         "none": "Ei mitään",
         "des": "DES",
         "3des": "3DES",

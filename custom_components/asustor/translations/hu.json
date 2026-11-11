@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Adja meg az ADM-ben beállított SNMP v3 felhasználót. A jelmondatoknak legalább 8 karakter hosszúnak kell lenniük.",
+        "description": "Adja meg az ADM-ben (Szolgáltatások > SNMP) beállított SNMP v3 felhasználót és jelszót. Hagyja a protokollokat Automatikus értéken: felismerjük őket.",
         "data": {
           "username": "Felhasználónév",
           "auth_protocol": "Hitelesítési protokoll",
-          "auth_key": "Hitelesítési jelmondat",
+          "auth_key": "Jelszó",
           "priv_protocol": "Titkosítási protokoll",
-          "priv_key": "Titkosítási jelmondat"
+          "priv_key": "Titkosítási jelszó (üres = megegyezik a jelszóval)"
         }
       }
     },
     "error": {
       "cannot_connect": "A NAS nem érhető el SNMP-n keresztül. Ellenőrizze a gazdagépet, a portot és a hitelesítő adatokat, valamint hogy az SNMP be van-e kapcsolva.",
       "invalid_auth": "A NAS elutasította az SNMP v3 hitelesítő adatokat.",
-      "key_too_short": "A jelmondatoknak legalább 8 karakter hosszúnak kell lenniük.",
+      "key_too_short": "A jelszónak legalább 8 karakter hosszúnak kell lennie.",
       "priv_requires_auth": "A titkosításhoz hitelesítési protokoll szükséges.",
       "already_configured": "Egy másik bejegyzés már használja ezt a gazdagépet."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automatikus",
         "none": "Nincs",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automatikus",
         "none": "Nincs",
         "des": "DES",
         "3des": "3DES",

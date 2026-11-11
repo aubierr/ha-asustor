@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "输入在 ADM 中配置的 SNMP v3 用户。密码短语至少需要 8 个字符。",
+        "description": "输入在 ADM（服务 > SNMP）中设置的 SNMP v3 用户名和密码。协议保持“自动”即可，会为您自动检测。",
         "data": {
           "username": "用户名",
           "auth_protocol": "认证协议",
-          "auth_key": "认证密码短语",
+          "auth_key": "密码",
           "priv_protocol": "加密协议",
-          "priv_key": "加密密码短语"
+          "priv_key": "加密密码（留空则与上方密码相同）"
         }
       }
     },
     "error": {
       "cannot_connect": "无法通过 SNMP 连接 NAS。请检查主机、端口和凭据，以及 SNMP 是否已启用。",
       "invalid_auth": "NAS 拒绝了 SNMP v3 凭据。",
-      "key_too_short": "密码短语至少需要 8 个字符。",
+      "key_too_short": "密码至少需要 8 个字符。",
       "priv_requires_auth": "加密需要认证协议。",
       "already_configured": "其他条目已在使用此主机。"
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "自动",
         "none": "无",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "自动",
         "none": "无",
         "des": "DES",
         "3des": "3DES",

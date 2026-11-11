@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Voer de in ADM ingestelde SNMP v3-gebruiker in. Wachtwoordzinnen hebben minimaal 8 tekens nodig.",
+        "description": "Voer de SNMP v3-gebruiker en het wachtwoord in die in ADM zijn ingesteld (Services > SNMP). Laat de protocollen op Automatisch staan: ze worden voor u gedetecteerd.",
         "data": {
           "username": "Gebruikersnaam",
           "auth_protocol": "Authenticatieprotocol",
-          "auth_key": "Authenticatiewachtwoordzin",
+          "auth_key": "Wachtwoord",
           "priv_protocol": "Versleutelingsprotocol",
-          "priv_key": "Versleutelingswachtwoordzin"
+          "priv_key": "Versleutelingswachtwoord (leeg = zelfde als het wachtwoord)"
         }
       }
     },
     "error": {
       "cannot_connect": "Kan de NAS niet bereiken via SNMP. Controleer host, poort en inloggegevens en of SNMP is ingeschakeld.",
       "invalid_auth": "De NAS heeft de SNMP v3-inloggegevens geweigerd.",
-      "key_too_short": "Wachtwoordzinnen moeten minimaal 8 tekens lang zijn.",
+      "key_too_short": "Het wachtwoord moet minimaal 8 tekens lang zijn.",
       "priv_requires_auth": "Versleuteling vereist een authenticatieprotocol.",
       "already_configured": "Een andere invoer gebruikt deze host al."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automatisch",
         "none": "Geen",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automatisch",
         "none": "Geen",
         "des": "DES",
         "3des": "3DES",

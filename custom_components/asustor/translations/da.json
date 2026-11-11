@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Angiv den SNMP v3-bruger, der er konfigureret i ADM. Adgangssætninger skal være mindst 8 tegn.",
+        "description": "Angiv SNMP v3-brugeren og adgangskoden, der er indstillet i ADM (Tjenester > SNMP). Lad protokollerne stå på Automatisk: de registreres for dig.",
         "data": {
           "username": "Brugernavn",
           "auth_protocol": "Godkendelsesprotokol",
-          "auth_key": "Godkendelsesadgangssætning",
+          "auth_key": "Adgangskode",
           "priv_protocol": "Krypteringsprotokol",
-          "priv_key": "Krypteringsadgangssætning"
+          "priv_key": "Krypteringsadgangskode (tom = samme som adgangskoden)"
         }
       }
     },
     "error": {
       "cannot_connect": "Kan ikke nå NAS via SNMP. Kontrollér vært, port og loginoplysninger, og at SNMP er aktiveret.",
       "invalid_auth": "NAS afviste SNMP v3-oplysningerne.",
-      "key_too_short": "Adgangssætninger skal være mindst 8 tegn.",
+      "key_too_short": "Adgangskoden skal være mindst 8 tegn.",
       "priv_requires_auth": "Kryptering kræver en godkendelsesprotokol.",
       "already_configured": "En anden post bruger allerede denne vært."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automatisk",
         "none": "Ingen",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automatisk",
         "none": "Ingen",
         "des": "DES",
         "3des": "3DES",

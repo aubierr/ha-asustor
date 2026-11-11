@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Introduzca el usuario SNMP v3 configurado en ADM. Las frases de contraseña requieren al menos 8 caracteres.",
+        "description": "Introduzca el usuario y la contraseña de SNMP v3 definidos en ADM (Servicios > SNMP). Deje los protocolos en Automático: se detectan por usted.",
         "data": {
           "username": "Nombre de usuario",
           "auth_protocol": "Protocolo de autenticación",
-          "auth_key": "Frase de contraseña de autenticación",
+          "auth_key": "Contraseña",
           "priv_protocol": "Protocolo de cifrado",
-          "priv_key": "Frase de contraseña de cifrado"
+          "priv_key": "Contraseña de cifrado (vacía = la misma contraseña)"
         }
       }
     },
     "error": {
       "cannot_connect": "No se puede conectar con el NAS por SNMP. Compruebe el host, el puerto y las credenciales, y que SNMP esté activado.",
       "invalid_auth": "El NAS rechazó las credenciales SNMP v3.",
-      "key_too_short": "Las frases de contraseña deben tener al menos 8 caracteres.",
+      "key_too_short": "La contraseña debe tener al menos 8 caracteres.",
       "priv_requires_auth": "El cifrado requiere un protocolo de autenticación.",
       "already_configured": "Otra entrada ya usa este host."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automático",
         "none": "Ninguno",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automático",
         "none": "Ninguno",
         "des": "DES",
         "3des": "3DES",

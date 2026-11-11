@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Introduceți utilizatorul SNMP v3 configurat în ADM. Frazele de acces trebuie să aibă cel puțin 8 caractere.",
+        "description": "Introduceți utilizatorul și parola SNMP v3 setate în ADM (Servicii > SNMP). Lăsați protocoalele pe Automat: sunt detectate pentru dvs.",
         "data": {
           "username": "Nume utilizator",
           "auth_protocol": "Protocol de autentificare",
-          "auth_key": "Frază de acces pentru autentificare",
+          "auth_key": "Parolă",
           "priv_protocol": "Protocol de criptare",
-          "priv_key": "Frază de acces pentru criptare"
+          "priv_key": "Parolă de criptare (goală = aceeași ca parola)"
         }
       }
     },
     "error": {
       "cannot_connect": "Nu se poate contacta NAS-ul prin SNMP. Verificați gazda, portul și datele de autentificare și dacă SNMP este activat.",
       "invalid_auth": "NAS-ul a respins datele de autentificare SNMP v3.",
-      "key_too_short": "Frazele de acces trebuie să aibă cel puțin 8 caractere.",
+      "key_too_short": "Parola trebuie să aibă cel puțin 8 caractere.",
       "priv_requires_auth": "Criptarea necesită un protocol de autentificare.",
       "already_configured": "O altă intrare folosește deja această gazdă."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automat",
         "none": "Niciunul",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automat",
         "none": "Niciunul",
         "des": "DES",
         "3des": "3DES",

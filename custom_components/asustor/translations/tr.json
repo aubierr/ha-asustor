@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "ADM'de yapılandırılan SNMP v3 kullanıcısını girin. Parolalar en az 8 karakter olmalıdır.",
+        "description": "ADM'de (Hizmetler > SNMP) belirlediğiniz SNMP v3 kullanıcısını ve parolasını girin. Protokolleri Otomatik bırakın: sizin için algılanır.",
         "data": {
           "username": "Kullanıcı adı",
           "auth_protocol": "Kimlik doğrulama protokolü",
-          "auth_key": "Kimlik doğrulama parolası",
+          "auth_key": "Parola",
           "priv_protocol": "Şifreleme protokolü",
-          "priv_key": "Şifreleme parolası"
+          "priv_key": "Şifreleme parolası (boş = parola ile aynı)"
         }
       }
     },
     "error": {
       "cannot_connect": "NAS'a SNMP ile ulaşılamıyor. Ana bilgisayarı, bağlantı noktasını ve kimlik bilgilerini, ayrıca SNMP'nin etkin olduğunu kontrol edin.",
       "invalid_auth": "NAS, SNMP v3 kimlik bilgilerini reddetti.",
-      "key_too_short": "Parolalar en az 8 karakter olmalıdır.",
+      "key_too_short": "Parola en az 8 karakter olmalıdır.",
       "priv_requires_auth": "Şifreleme için bir kimlik doğrulama protokolü gerekir.",
       "already_configured": "Başka bir kayıt bu ana bilgisayarı zaten kullanıyor."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Otomatik",
         "none": "Yok",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Otomatik",
         "none": "Yok",
         "des": "DES",
         "3des": "3DES",

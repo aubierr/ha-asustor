@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.data_entry_flow import FlowResultType
 
@@ -141,3 +142,76 @@ async def test_options_flow(hass, make_entry):
     assert entry.state is ConfigEntryState.LOADED
     assert entry.runtime_data.update_interval.total_seconds() == 120
     assert {i["name"] for i in entry.runtime_data.data["interfaces"].values()} == {"eth0"}
+
+
+# --- ADM only asks for a user name and one password: protocols are detected -----------------------
+ADM_INPUT = {"username": "snmp", "auth_key": "snmp-pass-1", "auth_protocol": "auto", "priv_protocol": "auto"}
+
+
+async def test_v3_form_defaults_to_automatic_protocols(hass, fake_snmp):
+    result = await _start(hass, "3")
+    defaults = {str(k): k.default() for k in result["data_schema"].schema if k.default is not None}
+    assert defaults["auth_protocol"] == "auto" and defaults["priv_protocol"] == "auto"
+
+
+@pytest.mark.parametrize(("auth", "priv"), [
+    ("sha", "aes"), ("sha", "des"), ("sha", "none"), ("md5", "aes"), ("md5", "des"), ("md5", "none"),
+])
+async def test_v3_protocols_are_detected(hass, fake_snmp, auth, priv):
+    fake_snmp.v3_accepts = (auth, priv)
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], ADM_INPUT)
+    assert result["type"] is FlowResultType.CREATE_ENTRY, result.get("errors")
+    data = result["data"]
+    assert (data["auth_protocol"], data["priv_protocol"]) == (auth, priv)
+    assert data["username"] == "snmp" and data["auth_key"] == "snmp-pass-1"
+    # one password only: encryption reuses it (and nothing is stored when there is no encryption)
+    assert data["priv_key"] == ("" if priv == "none" else "snmp-pass-1")
+    assert fake_snmp.timeouts[0] == 2.5  # short probing timeouts, not the 5 s default
+    await hass.async_block_till_done()
+
+
+async def test_explicit_protocols_use_normal_timeouts(hass, fake_snmp):
+    result = await _start(hass, "3")
+    await hass.config_entries.flow.async_configure(result["flow_id"], V3_INPUT)
+    assert fake_snmp.timeouts[0] == 5 and 2.5 not in fake_snmp.timeouts  # a single candidate: no probing
+    await hass.async_block_till_done()
+
+
+async def test_auto_with_a_wrong_password_is_invalid_auth(hass, fake_snmp):
+    fake_snmp.fail(auth=True)
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], ADM_INPUT)
+    assert result["type"] is FlowResultType.FORM and result["errors"] == {"base": "invalid_auth"}
+
+
+async def test_auto_against_a_silent_nas_is_cannot_connect(hass, fake_snmp):
+    fake_snmp.fail()  # every candidate times out
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], ADM_INPUT)
+    assert result["errors"] == {"base": "cannot_connect"}
+    assert len(fake_snmp.timeouts) == 6  # all candidates tried, then reported as unreachable
+
+
+async def test_explicit_protocols_that_the_nas_rejects(hass, fake_snmp):
+    fake_snmp.v3_accepts = ("sha", "aes")
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {**ADM_INPUT, "auth_protocol": "md5", "priv_protocol": "des"})
+    assert result["errors"] == {"base": "invalid_auth"}
+
+
+async def test_encryption_password_can_differ(hass, fake_snmp):
+    fake_snmp.v3_accepts = ("sha", "aes")
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {**ADM_INPUT, "priv_key": "another-secret"})
+    assert result["data"]["priv_key"] == "another-secret"
+    await hass.async_block_till_done()
+
+
+async def test_short_password_is_refused_in_auto_mode(hass, fake_snmp):
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {**ADM_INPUT, "auth_key": "short"})
+    assert result["errors"] == {"base": "key_too_short"}
+    assert fake_snmp.requests == 0  # refused before touching the network

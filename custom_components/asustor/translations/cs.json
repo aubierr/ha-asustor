@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Zadejte uživatele SNMP v3 nastaveného v ADM. Přístupové fráze musí mít alespoň 8 znaků.",
+        "description": "Zadejte uživatele a heslo SNMP v3 nastavené v ADM (Služby > SNMP). Protokoly nechte na Automaticky: zjistí se za vás.",
         "data": {
           "username": "Uživatelské jméno",
           "auth_protocol": "Ověřovací protokol",
-          "auth_key": "Ověřovací přístupová fráze",
+          "auth_key": "Heslo",
           "priv_protocol": "Šifrovací protokol",
-          "priv_key": "Šifrovací přístupová fráze"
+          "priv_key": "Šifrovací heslo (prázdné = stejné jako heslo)"
         }
       }
     },
     "error": {
       "cannot_connect": "NAS se nepodařilo kontaktovat přes SNMP. Zkontrolujte hostitele, port a přihlašovací údaje a zda je SNMP zapnuto.",
       "invalid_auth": "NAS odmítl přihlašovací údaje SNMP v3.",
-      "key_too_short": "Přístupové fráze musí mít alespoň 8 znaků.",
+      "key_too_short": "Heslo musí mít alespoň 8 znaků.",
       "priv_requires_auth": "Šifrování vyžaduje ověřovací protokol.",
       "already_configured": "Tohoto hostitele již používá jiný záznam."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Automaticky",
         "none": "Žádný",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Automaticky",
         "none": "Žádný",
         "des": "DES",
         "3des": "3DES",

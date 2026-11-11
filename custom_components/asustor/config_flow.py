@@ -29,6 +29,7 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
+    AUTO,
     CONF_AUTH_KEY,
     CONF_AUTH_PROTOCOL,
     CONF_COMMUNITY,
@@ -70,11 +71,15 @@ class InvalidAuth(Exception):
     """SNMPv3 credentials were rejected."""
 
 
-async def _validate(hass: HomeAssistant, conn: Mapping[str, Any]) -> str:
+async def _validate(
+    hass: HomeAssistant, conn: Mapping[str, Any], timeout: float = 5, retries: int = 1
+) -> str:
     """Query the NAS once; return its SNMP system name."""
     engine = await hass.async_add_executor_job(create_engine)
     try:
-        client = AsustorSnmp(engine, conn[CONF_HOST], conn[CONF_PORT], build_auth(conn))
+        client = AsustorSnmp(
+            engine, conn[CONF_HOST], conn[CONF_PORT], build_auth(conn), timeout=timeout, retries=retries
+        )
         res = await client.get([OID_SYS_DESCR, OID_SYS_NAME])
     except SnmpAuthError as err:
         raise InvalidAuth from err
@@ -85,6 +90,44 @@ async def _validate(hass: HomeAssistant, conn: Mapping[str, Any]) -> str:
     if not res:
         raise CannotConnect
     return to_str(res[OID_SYS_NAME]) if OID_SYS_NAME in res else conn[CONF_HOST]
+
+
+# ADM's SNMP v3 form only asks for a user name and ONE password, so the protocols are unknown.
+# Candidates are tried from most to least likely; the first that the NAS accepts is stored.
+AUTO_AUTH = ["sha", "md5"]
+AUTO_PRIV = ["aes", "des", "none"]
+PROBE_TIMEOUT = 2.5  # seconds per candidate while probing (worst case ~15 s when the NAS is unreachable)
+
+
+async def _resolve_v3(hass: HomeAssistant, conn: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    """Return (connection with concrete protocols, NAS name). Raises InvalidAuth / CannotConnect.
+
+    Not every agent answers a mismatching combination with an SNMP report: some stay silent. A timeout
+    therefore only rules out that candidate. At the end, if at least one candidate was explicitly
+    rejected the NAS is reachable and the credentials are wrong (InvalidAuth); if every candidate timed
+    out the NAS is unreachable or SNMP v3 is off (CannotConnect).
+    """
+    auths = AUTO_AUTH if conn[CONF_AUTH_PROTOCOL] == AUTO else [conn[CONF_AUTH_PROTOCOL]]
+    privs = AUTO_PRIV if conn[CONF_PRIV_PROTOCOL] == AUTO else [conn[CONF_PRIV_PROTOCOL]]
+    candidates = [(a, p) for a in auths for p in privs if not (p != "none" and a == "none")]
+    probing = len(candidates) > 1
+    timeout, retries = (PROBE_TIMEOUT, 0) if probing else (5, 1)
+    reachable = False
+    for auth, priv in candidates:
+        candidate = {
+            **conn,
+            CONF_AUTH_PROTOCOL: auth,
+            CONF_PRIV_PROTOCOL: priv,
+            CONF_AUTH_KEY: conn[CONF_AUTH_KEY] if auth != "none" else "",
+            CONF_PRIV_KEY: conn[CONF_PRIV_KEY] if priv != "none" else "",
+        }
+        try:
+            return candidate, await _validate(hass, candidate, timeout, retries)
+        except InvalidAuth:
+            reachable = True
+        except CannotConnect:
+            continue
+    raise InvalidAuth if reachable else CannotConnect
 
 
 def _protocol_selector(options: list[str], translation_key: str) -> SelectSelector:
@@ -197,12 +240,13 @@ class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             auth = user_input[CONF_AUTH_PROTOCOL]
             priv = user_input[CONF_PRIV_PROTOCOL]
-            auth_key = user_input.get(CONF_AUTH_KEY) or ""
-            priv_key = user_input.get(CONF_PRIV_KEY) or ""
-            if priv != "none" and auth == "none":
+            password = user_input.get(CONF_AUTH_KEY) or ""
+            # ADM has a single password field: encryption reuses it unless another one is given.
+            priv_key = user_input.get(CONF_PRIV_KEY) or password
+            if auth == "none" and priv not in ("none", AUTO):
                 errors["base"] = "priv_requires_auth"
-            elif (auth != "none" and len(auth_key) < MIN_KEY_LENGTH) or (
-                priv != "none" and len(priv_key) < MIN_KEY_LENGTH
+            elif (auth != "none" and len(password) < MIN_KEY_LENGTH) or (
+                priv not in ("none",) and auth != "none" and len(priv_key) < MIN_KEY_LENGTH
             ):
                 errors["base"] = "key_too_short"
             else:
@@ -210,13 +254,13 @@ class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
                     **self._conn,
                     CONF_USERNAME: user_input[CONF_USERNAME],
                     CONF_AUTH_PROTOCOL: auth,
-                    CONF_AUTH_KEY: auth_key if auth != "none" else "",
+                    CONF_AUTH_KEY: password,
                     CONF_PRIV_PROTOCOL: priv,
-                    CONF_PRIV_KEY: priv_key if priv != "none" else "",
+                    CONF_PRIV_KEY: priv_key,
                 }
                 conn.pop(CONF_COMMUNITY, None)
                 try:
-                    name = await _validate(self.hass, conn)
+                    conn, name = await _resolve_v3(self.hass, conn)
                 except InvalidAuth:
                     errors["base"] = "invalid_auth"
                 except CannotConnect:
@@ -229,12 +273,12 @@ class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
         schema = vol.Schema(
             {
                 vol.Required(CONF_USERNAME, default=d.get(CONF_USERNAME, "")): str,
-                vol.Required(CONF_AUTH_PROTOCOL, default=d.get(CONF_AUTH_PROTOCOL, "sha")): _protocol_selector(
-                    list(AUTH_PROTOCOLS), "auth_protocol"
+                vol.Required(CONF_AUTH_KEY, default=d.get(CONF_AUTH_KEY, "")): _secret(),
+                vol.Required(CONF_AUTH_PROTOCOL, default=d.get(CONF_AUTH_PROTOCOL, AUTO)): _protocol_selector(
+                    [AUTO, *AUTH_PROTOCOLS], "auth_protocol"
                 ),
-                vol.Optional(CONF_AUTH_KEY, default=d.get(CONF_AUTH_KEY, "")): _secret(),
-                vol.Required(CONF_PRIV_PROTOCOL, default=d.get(CONF_PRIV_PROTOCOL, "aes")): _protocol_selector(
-                    list(PRIV_PROTOCOLS), "priv_protocol"
+                vol.Required(CONF_PRIV_PROTOCOL, default=d.get(CONF_PRIV_PROTOCOL, AUTO)): _protocol_selector(
+                    [AUTO, *PRIV_PROTOCOLS], "priv_protocol"
                 ),
                 vol.Optional(CONF_PRIV_KEY, default=d.get(CONF_PRIV_KEY, "")): _secret(),
             }

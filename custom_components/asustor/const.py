@@ -14,6 +14,7 @@ CONF_PRIV_PROTOCOL = "priv_protocol"
 CONF_PRIV_KEY = "priv_key"
 SNMP_V2C = "2c"
 SNMP_V3 = "3"
+AUTO = "auto"  # SNMPv3 protocol: detect it by trying the likely candidates
 
 CONF_SCAN_INTERVAL = "scan_interval"
 CONF_INTERFACES = "interfaces"

@@ -29,20 +29,20 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Nhập người dùng SNMP v3 đã cấu hình trong ADM. Cụm mật khẩu phải có ít nhất 8 ký tự.",
+        "description": "Nhập người dùng và mật khẩu SNMP v3 đã đặt trong ADM (Dịch vụ > SNMP). Hãy để các giao thức ở chế độ Tự động: chúng sẽ được phát hiện cho bạn.",
         "data": {
           "username": "Tên người dùng",
           "auth_protocol": "Giao thức xác thực",
-          "auth_key": "Cụm mật khẩu xác thực",
+          "auth_key": "Mật khẩu",
           "priv_protocol": "Giao thức mã hóa",
-          "priv_key": "Cụm mật khẩu mã hóa"
+          "priv_key": "Mật khẩu mã hóa (để trống = giống mật khẩu)"
         }
       }
     },
     "error": {
       "cannot_connect": "Không thể kết nối tới NAS qua SNMP. Hãy kiểm tra máy chủ, cổng, thông tin đăng nhập và SNMP đã được bật chưa.",
       "invalid_auth": "NAS đã từ chối thông tin đăng nhập SNMP v3.",
-      "key_too_short": "Cụm mật khẩu phải có ít nhất 8 ký tự.",
+      "key_too_short": "Mật khẩu phải có ít nhất 8 ký tự.",
       "priv_requires_auth": "Mã hóa yêu cầu một giao thức xác thực.",
       "already_configured": "Mục khác đã sử dụng máy chủ này."
     },
@@ -73,6 +73,7 @@
     },
     "auth_protocol": {
       "options": {
+        "auto": "Tự động",
         "none": "Không",
         "md5": "MD5",
         "sha": "SHA",
@@ -84,6 +85,7 @@
     },
     "priv_protocol": {
       "options": {
+        "auto": "Tự động",
         "none": "Không",
         "des": "DES",
         "3des": "3DES",
