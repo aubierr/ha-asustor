@@ -4,20 +4,65 @@
       "user": {
         "title": "ASUSTOR NAS (SNMP)",
         "description": "Enable SNMP in ADM (Services > SNMP) first.",
-        "data": { "host": "Host", "name": "Name", "port": "Port", "community": "SNMP community" }
+        "data": {
+          "host": "Host",
+          "name": "Name",
+          "port": "Port",
+          "community": "SNMP community"
+        }
       }
     },
-    "error": { "cannot_connect": "Cannot reach the NAS over SNMP (check host, community, and that SNMP is enabled)." },
-    "abort": { "already_configured": "This NAS is already configured." }
+    "error": {
+      "cannot_connect": "Cannot reach the NAS over SNMP (check host, community, and that SNMP is enabled)."
+    },
+    "abort": {
+      "already_configured": "This NAS is already configured."
+    }
   },
   "entity": {
     "sensor": {
-      "cpu_usage": { "name": "CPU usage" },
-      "memory_usage": { "name": "Memory usage" },
-      "load_1": { "name": "Load 1 min" },
-      "load_5": { "name": "Load 5 min" },
-      "load_15": { "name": "Load 15 min" },
-      "uptime": { "name": "Uptime" }
+      "cpu_usage": {
+        "name": "CPU usage"
+      },
+      "memory_usage": {
+        "name": "Memory usage"
+      },
+      "load_1": {
+        "name": "Load 1 min"
+      },
+      "load_5": {
+        "name": "Load 5 min"
+      },
+      "load_15": {
+        "name": "Load 15 min"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "memory_total": {
+        "name": "Total memory"
+      },
+      "memory_available": {
+        "name": "Available memory"
+      },
+      "swap_usage": {
+        "name": "Swap usage"
+      },
+      "update_status": {
+        "name": "ADM update"
+      },
+      "timezone": {
+        "name": "Time zone"
+      },
+      "adm_uptime": {
+        "name": "ADM uptime"
+      },
+      "system_time": {
+        "name": "System time"
+      },
+      "cpu_model": {
+        "name": "CPU model"
+      }
     }
   }
 }

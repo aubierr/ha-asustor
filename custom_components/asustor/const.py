@@ -47,3 +47,58 @@ OID_AS_DISK_STATUS = "1.3.6.1.4.1.44738.4.1.1.5"  # Good
 OID_AS_DISK_HEALTH = "1.3.6.1.4.1.44738.4.1.1.6"  # Healthy
 OID_AS_DISK_TEMP = "1.3.6.1.4.1.44738.4.1.1.7"  # deg C
 OID_AS_VOLUME_STATUS = "1.3.6.1.4.1.44738.5.1.1.4"  # healthy
+
+# --- extra OIDs (verified on AS5202T / ADM 5.1.4 unless noted) ---
+OID_MEM_SWAP_TOTAL = "1.3.6.1.4.1.2021.4.3.0"
+OID_MEM_SWAP_AVAIL = "1.3.6.1.4.1.2021.4.4.0"
+
+OID_AS_SERIAL = "1.3.6.1.4.1.44738.1.1.0"
+OID_AS_BIOS = "1.3.6.1.4.1.44738.1.3.0"
+OID_AS_UPTIME_TEXT = "1.3.6.1.4.1.44738.1.4.0"
+OID_AS_TIME = "1.3.6.1.4.1.44738.1.5.0"
+OID_AS_TIMEZONE = "1.3.6.1.4.1.44738.1.6.0"
+OID_AS_UPDATE = "1.3.6.1.4.1.44738.1.7.0"
+OID_AS_CPU_MODEL = "1.3.6.1.4.1.44738.2.2.0"
+OID_AS_CPU_USAGE = "1.3.6.1.4.1.44738.2.3.1.2"  # per core
+OID_AS_FAN_TABLE = "1.3.6.1.4.1.44738.2.4.1.2"
+OID_AS_CPU_TEMP_TABLE = "1.3.6.1.4.1.44738.2.5.1.2"
+OID_AS_SYS_TEMP_TABLE = "1.3.6.1.4.1.44738.2.5.1.3"
+
+OID_AS_NET_NAME = "1.3.6.1.4.1.44738.3.1.1.2"
+OID_AS_NET_MAC = "1.3.6.1.4.1.44738.3.1.1.3"
+OID_AS_NET_IPV4 = "1.3.6.1.4.1.44738.3.1.1.4"
+OID_AS_NET_IPV6 = "1.3.6.1.4.1.44738.3.1.1.5"
+
+OID_AS_DISK_NAME = "1.3.6.1.4.1.44738.4.1.1.2"
+OID_AS_DISK_TYPE = "1.3.6.1.4.1.44738.4.1.1.4"
+OID_AS_DISK_SMART = "1.3.6.1.4.1.44738.4.1.1.5"  # Good
+OID_AS_DISK_SIZE = "1.3.6.1.4.1.44738.4.1.1.8"  # GB
+
+OID_AS_VOLUME_LEVEL = "1.3.6.1.4.1.44738.5.1.1.3"
+OID_AS_VOLUME_FS = "1.3.6.1.4.1.44738.5.1.1.5"
+
+# UPS table 44738.6.1.1.<col>.<idx> (from ASUSTOR-UPS-MIB shipped with ADM)
+OID_AS_UPS = "1.3.6.1.4.1.44738.6.1.1"
+UPS_COLUMNS = {
+    "manufacturer": 2,
+    "model": 3,
+    "vendor_id": 4,
+    "product_id": 5,
+    "input_sensitivity": 6,
+    "status": 7,
+    "battery_remaining": 8,  # seconds
+    "battery_charge": 9,  # %
+    "battery_low": 10,  # %
+    "input_voltage": 11,
+}
+
+OID_AS_NET_SENT = "1.3.6.1.4.1.44738.3.1.1.6"  # KB
+OID_AS_NET_RECEIVED = "1.3.6.1.4.1.44738.3.1.1.7"  # KB
+
+# UCD-DISKIO-MIB (returned empty on ADM 5.1 AS5202T; used when available)
+OID_DISKIO_DEVICE = "1.3.6.1.4.1.2021.13.15.1.1.2"
+OID_DISKIO_READ = "1.3.6.1.4.1.2021.13.15.1.1.3"
+OID_DISKIO_WRITE = "1.3.6.1.4.1.2021.13.15.1.1.4"
+
+OID_IF_OPER_STATUS = "1.3.6.1.2.1.2.2.1.8"
+OID_IF_HIGH_SPEED = "1.3.6.1.2.1.31.1.1.1.15"

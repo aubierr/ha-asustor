@@ -88,6 +88,14 @@ def to_int(val: Any) -> int | None:
         return None
 
 
+def to_text(val: Any) -> str:
+    """Decode an OCTET STRING (incl. UTF-8 bytes) to a clean string."""
+    try:
+        return val.asOctets().decode("utf-8", "replace").strip("\x00 ").strip()
+    except AttributeError:
+        return to_str(val).strip()
+
+
 def to_str(val: Any) -> str:
     try:
         return val.prettyPrint()

@@ -12,11 +12,16 @@ Intégration personnalisée pour surveiller un NAS **ASUSTOR** (ADM) depuis Home
 
 | Catégorie | Capteurs |
 |---|---|
-| Système | Utilisation CPU, mémoire, charge (1/5/15 min), durée de fonctionnement |
-| Matériel | Température CPU, température système, vitesse du ventilateur |
-| Volumes | État, utilisation (%), espace libre, taille totale |
-| Disques | Température et santé de chaque disque |
-| Réseau | Octets reçus/envoyés par interface `eth*` / `bond*` |
+| Système | Utilisation CPU (globale et par cœur), mémoire (utilisation, totale, disponible), swap, charge (1/5/15 min), durée de fonctionnement, modèle du CPU, état des mises à jour ADM, fuseau horaire, heure |
+| Matériel | Température CPU et système, vitesse des ventilateurs |
+| Volumes | Utilisation (%), espace libre/utilisé/total, état, niveau RAID, système de fichiers |
+| Disques | Température, santé S.M.A.R.T., état, taille ; modèle et type en attributs |
+| Réseau | Pour `eth*` / `bond*` : octets reçus/envoyés, état du lien, vitesse ; adresses IPv4/IPv6 et MAC du NAS |
+| Disques (E/S) | Octets lus/écrits par disque, si le NAS expose UCD-DISKIO |
+| Onduleur (UPS) | État, charge batterie, autonomie, seuil de batterie faible, tension d'entrée, sensibilité — uniquement si un onduleur est connecté |
+| Appareil | Modèle, version ADM, version BIOS, numéro de série |
+
+Certains capteurs de diagnostic (adresse MAC, fuseau horaire, taille des disques, etc.) sont désactivés par défaut : activez-les depuis la fiche de l'entité.
 
 Les volumes, disques et interfaces sont détectés automatiquement.
 
@@ -51,7 +56,7 @@ Les données sont rafraîchies toutes les 60 secondes.
 
 ## Compatibilité
 
-Testé sur un **AS5202T** (ADM 5.1.4). Les OID ASUSTOR (`1.3.6.1.4.1.44738`) peuvent varier selon les modèles : les capteurs absents sont simplement ignorés. Pour vérifier un modèle :
+Testé sur un **AS5202T** (ADM 5.1.4), avec les fichiers MIB fournis par ce NAS. Les OID ASUSTOR (`1.3.6.1.4.1.44738`) peuvent varier selon les modèles : les capteurs absents sont simplement ignorés. Les capteurs UPS suivent le MIB officiel mais n'ont pas pu être testés avec un onduleur réel. Pour vérifier un modèle :
 
 ```bash
 snmpwalk -v2c -c public <ip-du-nas> 1.3.6.1.4.1.44738

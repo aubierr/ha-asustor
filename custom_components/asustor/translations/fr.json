@@ -4,20 +4,65 @@
       "user": {
         "title": "NAS ASUSTOR (SNMP)",
         "description": "Activez d'abord SNMP dans ADM (Services > SNMP).",
-        "data": { "host": "Hôte", "name": "Nom", "port": "Port", "community": "Communauté SNMP" }
+        "data": {
+          "host": "Hôte",
+          "name": "Nom",
+          "port": "Port",
+          "community": "Communauté SNMP"
+        }
       }
     },
-    "error": { "cannot_connect": "Impossible de joindre le NAS en SNMP (vérifiez l'hôte, la communauté et que SNMP est activé)." },
-    "abort": { "already_configured": "Ce NAS est déjà configuré." }
+    "error": {
+      "cannot_connect": "Impossible de joindre le NAS en SNMP (vérifiez l'hôte, la communauté et que SNMP est activé)."
+    },
+    "abort": {
+      "already_configured": "Ce NAS est déjà configuré."
+    }
   },
   "entity": {
     "sensor": {
-      "cpu_usage": { "name": "Utilisation CPU" },
-      "memory_usage": { "name": "Utilisation mémoire" },
-      "load_1": { "name": "Charge 1 min" },
-      "load_5": { "name": "Charge 5 min" },
-      "load_15": { "name": "Charge 15 min" },
-      "uptime": { "name": "Durée de fonctionnement" }
+      "cpu_usage": {
+        "name": "Utilisation CPU"
+      },
+      "memory_usage": {
+        "name": "Utilisation mémoire"
+      },
+      "load_1": {
+        "name": "Charge 1 min"
+      },
+      "load_5": {
+        "name": "Charge 5 min"
+      },
+      "load_15": {
+        "name": "Charge 15 min"
+      },
+      "uptime": {
+        "name": "Durée de fonctionnement"
+      },
+      "memory_total": {
+        "name": "Mémoire totale"
+      },
+      "memory_available": {
+        "name": "Mémoire disponible"
+      },
+      "swap_usage": {
+        "name": "Utilisation du swap"
+      },
+      "update_status": {
+        "name": "Mise à jour ADM"
+      },
+      "timezone": {
+        "name": "Fuseau horaire"
+      },
+      "adm_uptime": {
+        "name": "Disponibilité ADM"
+      },
+      "system_time": {
+        "name": "Heure système"
+      },
+      "cpu_model": {
+        "name": "Modèle de CPU"
+      }
     }
   }
 }
