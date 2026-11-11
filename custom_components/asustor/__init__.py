@@ -20,7 +20,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     engine = await hass.async_add_executor_job(create_engine)  # preloads MIBs (blocking I/O)
     client = AsustorSnmp(engine, entry.data[CONF_HOST], entry.data[CONF_PORT], build_auth(entry.data))
     coordinator = AsustorCoordinator(hass, entry, client)
-    await coordinator.async_config_entry_first_refresh()
+    try:
+        await coordinator.async_config_entry_first_refresh()
+    except BaseException:
+        engine.close_dispatcher()  # don't leak the engine when setup fails (NAS offline, bad auth...)
+        raise
     entry.runtime_data = coordinator
     entry.async_on_unload(engine.close_dispatcher)
 

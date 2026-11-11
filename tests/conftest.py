@@ -10,7 +10,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from pysnmp.proto.rfc1902 import (
-    Counter32,
     Counter64,
     Gauge32,
     Integer32,

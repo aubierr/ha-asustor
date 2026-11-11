@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import timedelta
 import logging
 import re
@@ -48,6 +49,7 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.sw_version: str | None = None
         self.hw_version: str | None = None
         self.serial: str | None = None
+        self.last_poll_duration: float | None = None  # seconds, for diagnostics
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:
@@ -73,6 +75,7 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             return {}
 
     async def _fetch(self) -> dict[str, Any]:
+        started = time.monotonic()
         raw = await self.client.get(
             [
                 c.OID_SYS_UPTIME, c.OID_CPU_IDLE,
@@ -112,18 +115,30 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if swap_t and swap_a is not None:
             system["swap_usage"] = round(max(0, 100 * (swap_t - swap_a) / swap_t), 1)
 
-        return {
-            "system": system,
-            "cpus": {k: {"usage": to_int(v)} for k, v in (await self._safe_walk(c.OID_AS_CPU_USAGE)).items()},
-            "fans": {k: {"speed": to_int(v)} for k, v in (await self._safe_walk(c.OID_AS_FAN_TABLE)).items()},
-            "temps": await self._temps(),
-            "networks": await self._networks(),
-            "volumes": await self._volumes(),
-            "interfaces": self._with_rates(await self._interfaces()),
-            "disks": await self._disks(),
-            "diskio": await self._diskio(),
-            "ups": await self._ups(),
-        }
+        # Independent groups are fetched concurrently; the client caps requests in flight.
+        keys = ("cpus", "fans", "temps", "networks", "volumes", "interfaces", "disks", "diskio", "ups")
+        results = await asyncio.gather(
+            self._cpus(), self._fans(), self._temps(), self._networks(), self._volumes(),
+            self._interfaces(), self._disks(), self._diskio(), self._ups(),
+            return_exceptions=True,
+        )
+        for res in results:
+            if isinstance(res, BaseException):
+                raise res
+        data = dict(zip(keys, results, strict=True))
+        data["interfaces"] = self._with_rates(data["interfaces"])
+        data["system"] = system
+        self.last_poll_duration = round(time.monotonic() - started, 2)
+        _LOGGER.debug("ASUSTOR poll took %.2f s", self.last_poll_duration)
+        return data
+
+    async def _cpus(self) -> dict[str, dict[str, Any]]:
+        walked = await self._safe_walk(c.OID_AS_CPU_USAGE)
+        return {k: {"usage": to_int(v)} for k, v in walked.items()}
+
+    async def _fans(self) -> dict[str, dict[str, Any]]:
+        walked = await self._safe_walk(c.OID_AS_FAN_TABLE)
+        return {k: {"speed": to_int(v)} for k, v in walked.items()}
 
     async def _temps(self) -> dict[str, dict[str, Any]]:
         cpu = await self._safe_walk(c.OID_AS_CPU_TEMP_TABLE)

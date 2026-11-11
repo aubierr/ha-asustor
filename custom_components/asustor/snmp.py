@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Mapping
 from typing import Any
 
@@ -111,6 +112,9 @@ def _raise_indication(err_ind: Any) -> None:
     raise SnmpError(text)
 
 
+MAX_CONCURRENT_REQUESTS = 4
+
+
 class AsustorSnmp:
     """SNMP v2c/v3 client for one NAS."""
 
@@ -131,6 +135,8 @@ class AsustorSnmp:
         self._retries = retries
         self._target: UdpTransportTarget | None = None
         self._ctx = ContextData()
+        # NAS agents are fragile: cap the number of requests in flight at once.
+        self._gate = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
     async def _transport(self) -> UdpTransportTarget:
         if self._target is None:
@@ -141,13 +147,15 @@ class AsustorSnmp:
 
     async def get(self, oids: list[str]) -> dict[str, Any]:
         """GET several scalar OIDs. Missing OIDs are omitted."""
-        err_ind, err_stat, _idx, var_binds = await get_cmd(
-            self._engine,
-            self._auth,
-            await self._transport(),
-            self._ctx,
-            *[ObjectType(ObjectIdentity(o)) for o in oids],
-        )
+        transport = await self._transport()
+        async with self._gate:
+            err_ind, err_stat, _idx, var_binds = await get_cmd(
+                self._engine,
+                self._auth,
+                transport,
+                self._ctx,
+                *[ObjectType(ObjectIdentity(o)) for o in oids],
+            )
         if err_ind:
             _raise_indication(err_ind)
         if err_stat:
@@ -163,22 +171,24 @@ class AsustorSnmp:
         """Walk a subtree; returns {index_suffix: value}."""
         out: dict[str, Any] = {}
         prefix = base + "."
-        async for err_ind, err_stat, _idx, var_binds in walk_cmd(
-            self._engine,
-            self._auth,
-            await self._transport(),
-            self._ctx,
-            ObjectType(ObjectIdentity(base)),
-            lexicographicMode=False,
-        ):
-            if err_ind:
-                _raise_indication(err_ind)
-            if err_stat:
-                raise SnmpError(err_stat.prettyPrint())
-            for oid, val in var_binds:
-                s = str(oid)
-                if s.startswith(prefix):
-                    out[s[len(prefix):]] = val
+        transport = await self._transport()
+        async with self._gate:
+            async for err_ind, err_stat, _idx, var_binds in walk_cmd(
+                self._engine,
+                self._auth,
+                transport,
+                self._ctx,
+                ObjectType(ObjectIdentity(base)),
+                lexicographicMode=False,
+            ):
+                if err_ind:
+                    _raise_indication(err_ind)
+                if err_stat:
+                    raise SnmpError(err_stat.prettyPrint())
+                for oid, val in var_binds:
+                    s = str(oid)
+                    if s.startswith(prefix):
+                        out[s[len(prefix):]] = val
         return out
 
 

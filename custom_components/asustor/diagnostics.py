@@ -48,6 +48,7 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigE
             "bios_version": coordinator.hw_version,
         },
         "last_update_success": coordinator.last_update_success,
+        "last_poll_duration_s": coordinator.last_poll_duration,
         "update_interval_s": coordinator.update_interval.total_seconds() if coordinator.update_interval else None,
         "data": async_redact_data(coordinator.data, TO_REDACT),
         "asustor_mib_walk": raw,

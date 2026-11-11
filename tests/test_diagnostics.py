@@ -17,6 +17,7 @@ async def test_diagnostics_are_redacted(hass, make_entry):
     assert diag["entry"]["data"]["community"] == "**REDACTED**"
     assert diag["entry"]["data"]["host"] == "**REDACTED**"
     assert diag["last_update_success"] is True and diag["update_interval_s"] == 60
+    assert diag["last_poll_duration_s"] is not None
 
     raw = diag["asustor_mib_walk"]
     assert raw["1.3.6.1.4.1.44738.1.1.0"] == "**REDACTED**"  # serial
