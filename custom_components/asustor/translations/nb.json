@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Aktiver først SNMP i ADM (Tjenester > SNMP). Velg SNMP v3 hvis du har opprettet brukere der.",
+        "data": {
+          "host": "Vert",
+          "name": "Navn",
+          "port": "Port",
+          "snmp_version": "SNMP-versjon"
+        }
+      },
+      "reconfigure": {
+        "title": "Konfigurer ASUSTOR NAS på nytt",
+        "description": "Endre NAS-adressen eller SNMP-versjonen uten å fjerne integrasjonen.",
+        "data": {
+          "host": "Vert",
+          "port": "Port",
+          "snmp_version": "SNMP-versjon"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Skriv inn communityen som er konfigurert i ADM (Tjenester > SNMP).",
+        "data": {
+          "community": "SNMP-community"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Skriv inn SNMP v3-brukeren som er konfigurert i ADM. Passfraser må ha minst 8 tegn.",
+        "data": {
+          "username": "Brukernavn",
+          "auth_protocol": "Autentiseringsprotokoll",
+          "auth_key": "Autentiseringspassfrase",
+          "priv_protocol": "Krypteringsprotokoll",
+          "priv_key": "Krypteringspassfrase"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan ikke nå NAS via SNMP. Kontroller vert, port og påloggingsinformasjon, og at SNMP er aktivert.",
+      "invalid_auth": "NAS avviste SNMP v3-opplysningene.",
+      "key_too_short": "Passfraser må ha minst 8 tegn.",
+      "priv_requires_auth": "Kryptering krever en autentiseringsprotokoll.",
+      "already_configured": "En annen oppføring bruker allerede denne verten."
+    },
+    "abort": {
+      "already_configured": "Denne NAS-en er allerede konfigurert.",
+      "reconfigure_successful": "NAS-innstillingene er oppdatert.",
+      "reauth_successful": "Påloggingsinformasjonen er oppdatert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Alternativer for ASUSTOR NAS",
+        "description": "Avspørringsintervall og nettverksgrensesnitt som skal følges. Lagring laster integrasjonen på nytt.",
+        "data": {
+          "scan_interval": "Avspørringsintervall (sekunder)",
+          "interfaces": "Nettverksgrensesnitt som skal følges"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (bruker, autentisering, kryptering)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Ingen",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Ingen",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problem"
+      },
+      "connected": {
+        "name": "Tilkoblet"
+      },
+      "on_battery": {
+        "name": "På batteri"
+      },
+      "low_battery": {
+        "name": "Lavt batteri"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU-bruk"
+      },
+      "memory_usage": {
+        "name": "Minnebruk"
+      },
+      "memory_total": {
+        "name": "Totalt minne"
+      },
+      "memory_available": {
+        "name": "Tilgjengelig minne"
+      },
+      "swap_usage": {
+        "name": "Swap-bruk"
+      },
+      "load_1": {
+        "name": "Belastning (1 min)"
+      },
+      "load_5": {
+        "name": "Belastning (5 min)"
+      },
+      "load_15": {
+        "name": "Belastning (15 min)"
+      },
+      "uptime": {
+        "name": "Oppetid"
+      },
+      "timezone": {
+        "name": "Tidssone"
+      },
+      "adm_uptime": {
+        "name": "ADM-oppetid"
+      },
+      "system_time": {
+        "name": "Systemtid"
+      },
+      "cpu_model": {
+        "name": "CPU-modell"
+      },
+      "cpu_core_usage": {
+        "name": "Bruk CPU-kjerne {core}"
+      },
+      "fan_speed": {
+        "name": "Viftehastighet"
+      },
+      "fan_speed_n": {
+        "name": "Viftehastighet {fan}"
+      },
+      "cpu_temperature": {
+        "name": "CPU-temperatur"
+      },
+      "system_temperature": {
+        "name": "Systemtemperatur"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU-temperatur {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Systemtemperatur {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4-adresse"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6-adresse"
+      },
+      "net_mac": {
+        "name": "{interface} MAC-adresse"
+      },
+      "net_sent_adm": {
+        "name": "{interface} sendt (ADM-teller)"
+      },
+      "net_received_adm": {
+        "name": "{interface} mottatt (ADM-teller)"
+      },
+      "diskio_read": {
+        "name": "{device} lest"
+      },
+      "diskio_written": {
+        "name": "{device} skrevet"
+      },
+      "volume_usage": {
+        "name": "Bruk"
+      },
+      "volume_free": {
+        "name": "Ledig plass"
+      },
+      "volume_used": {
+        "name": "Brukt plass"
+      },
+      "volume_total": {
+        "name": "Total størrelse"
+      },
+      "volume_status": {
+        "name": "Status"
+      },
+      "volume_raid_level": {
+        "name": "RAID-nivå"
+      },
+      "volume_filesystem": {
+        "name": "Filsystem"
+      },
+      "if_received": {
+        "name": "Mottatt"
+      },
+      "if_sent": {
+        "name": "Sendt"
+      },
+      "if_receive_rate": {
+        "name": "Mottakshastighet"
+      },
+      "if_transmit_rate": {
+        "name": "Sendehastighet"
+      },
+      "if_link": {
+        "name": "Lenke"
+      },
+      "if_speed": {
+        "name": "Hastighet"
+      },
+      "disk_temperature": {
+        "name": "Temperatur"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T.-helse"
+      },
+      "disk_status": {
+        "name": "Status"
+      },
+      "disk_size": {
+        "name": "Størrelse"
+      },
+      "ups_status": {
+        "name": "Status"
+      },
+      "ups_battery_charge": {
+        "name": "Batteriladning"
+      },
+      "ups_battery_low": {
+        "name": "Grense for lavt batteri"
+      },
+      "ups_battery_runtime": {
+        "name": "Batteritid"
+      },
+      "ups_input_voltage": {
+        "name": "Inngangsspenning"
+      },
+      "ups_input_sensitivity": {
+        "name": "Inngangsfølsomhet"
+      },
+      "ups_vendor_id": {
+        "name": "Produsent-ID"
+      },
+      "ups_product_id": {
+        "name": "Produkt-ID"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM-firmware"
+      }
+    }
+  }
+}

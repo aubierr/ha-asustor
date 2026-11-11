@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Trước tiên hãy bật SNMP trong ADM (Dịch vụ > SNMP). Chọn SNMP v3 nếu bạn đã tạo người dùng ở đó.",
+        "data": {
+          "host": "Máy chủ",
+          "name": "Tên",
+          "port": "Cổng",
+          "snmp_version": "Phiên bản SNMP"
+        }
+      },
+      "reconfigure": {
+        "title": "Cấu hình lại ASUSTOR NAS",
+        "description": "Thay đổi địa chỉ NAS hoặc phiên bản SNMP mà không cần gỡ tích hợp.",
+        "data": {
+          "host": "Máy chủ",
+          "port": "Cổng",
+          "snmp_version": "Phiên bản SNMP"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Nhập community đã cấu hình trong ADM (Dịch vụ > SNMP).",
+        "data": {
+          "community": "Community SNMP"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Nhập người dùng SNMP v3 đã cấu hình trong ADM. Cụm mật khẩu phải có ít nhất 8 ký tự.",
+        "data": {
+          "username": "Tên người dùng",
+          "auth_protocol": "Giao thức xác thực",
+          "auth_key": "Cụm mật khẩu xác thực",
+          "priv_protocol": "Giao thức mã hóa",
+          "priv_key": "Cụm mật khẩu mã hóa"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Không thể kết nối tới NAS qua SNMP. Hãy kiểm tra máy chủ, cổng, thông tin đăng nhập và SNMP đã được bật chưa.",
+      "invalid_auth": "NAS đã từ chối thông tin đăng nhập SNMP v3.",
+      "key_too_short": "Cụm mật khẩu phải có ít nhất 8 ký tự.",
+      "priv_requires_auth": "Mã hóa yêu cầu một giao thức xác thực.",
+      "already_configured": "Mục khác đã sử dụng máy chủ này."
+    },
+    "abort": {
+      "already_configured": "NAS này đã được cấu hình.",
+      "reconfigure_successful": "Đã cập nhật cài đặt NAS.",
+      "reauth_successful": "Đã cập nhật thông tin đăng nhập."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tùy chọn ASUSTOR NAS",
+        "description": "Khoảng thời gian thăm dò và các giao diện mạng cần theo dõi. Lưu sẽ tải lại tích hợp.",
+        "data": {
+          "scan_interval": "Khoảng thời gian thăm dò (giây)",
+          "interfaces": "Giao diện mạng cần theo dõi"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (người dùng, xác thực, mã hóa)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Không",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Không",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Sự cố"
+      },
+      "connected": {
+        "name": "Đã kết nối"
+      },
+      "on_battery": {
+        "name": "Dùng pin"
+      },
+      "low_battery": {
+        "name": "Pin yếu"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Mức dùng CPU"
+      },
+      "memory_usage": {
+        "name": "Mức dùng bộ nhớ"
+      },
+      "memory_total": {
+        "name": "Tổng bộ nhớ"
+      },
+      "memory_available": {
+        "name": "Bộ nhớ khả dụng"
+      },
+      "swap_usage": {
+        "name": "Mức dùng swap"
+      },
+      "load_1": {
+        "name": "Tải (1 phút)"
+      },
+      "load_5": {
+        "name": "Tải (5 phút)"
+      },
+      "load_15": {
+        "name": "Tải (15 phút)"
+      },
+      "uptime": {
+        "name": "Thời gian hoạt động"
+      },
+      "timezone": {
+        "name": "Múi giờ"
+      },
+      "adm_uptime": {
+        "name": "Thời gian hoạt động của ADM"
+      },
+      "system_time": {
+        "name": "Giờ hệ thống"
+      },
+      "cpu_model": {
+        "name": "Mẫu CPU"
+      },
+      "cpu_core_usage": {
+        "name": "Mức dùng nhân CPU {core}"
+      },
+      "fan_speed": {
+        "name": "Tốc độ quạt"
+      },
+      "fan_speed_n": {
+        "name": "Tốc độ quạt {fan}"
+      },
+      "cpu_temperature": {
+        "name": "Nhiệt độ CPU"
+      },
+      "system_temperature": {
+        "name": "Nhiệt độ hệ thống"
+      },
+      "cpu_temperature_n": {
+        "name": "Nhiệt độ CPU {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Nhiệt độ hệ thống {sensor}"
+      },
+      "net_ipv4": {
+        "name": "Địa chỉ IPv4 {interface}"
+      },
+      "net_ipv6": {
+        "name": "Địa chỉ IPv6 {interface}"
+      },
+      "net_mac": {
+        "name": "Địa chỉ MAC {interface}"
+      },
+      "net_sent_adm": {
+        "name": "{interface} đã gửi (bộ đếm ADM)"
+      },
+      "net_received_adm": {
+        "name": "{interface} đã nhận (bộ đếm ADM)"
+      },
+      "diskio_read": {
+        "name": "{device} đã đọc"
+      },
+      "diskio_written": {
+        "name": "{device} đã ghi"
+      },
+      "volume_usage": {
+        "name": "Mức dùng"
+      },
+      "volume_free": {
+        "name": "Dung lượng trống"
+      },
+      "volume_used": {
+        "name": "Dung lượng đã dùng"
+      },
+      "volume_total": {
+        "name": "Tổng dung lượng"
+      },
+      "volume_status": {
+        "name": "Trạng thái"
+      },
+      "volume_raid_level": {
+        "name": "Mức RAID"
+      },
+      "volume_filesystem": {
+        "name": "Hệ thống tệp"
+      },
+      "if_received": {
+        "name": "Đã nhận"
+      },
+      "if_sent": {
+        "name": "Đã gửi"
+      },
+      "if_receive_rate": {
+        "name": "Tốc độ nhận"
+      },
+      "if_transmit_rate": {
+        "name": "Tốc độ gửi"
+      },
+      "if_link": {
+        "name": "Liên kết"
+      },
+      "if_speed": {
+        "name": "Tốc độ"
+      },
+      "disk_temperature": {
+        "name": "Nhiệt độ"
+      },
+      "disk_health": {
+        "name": "Tình trạng S.M.A.R.T."
+      },
+      "disk_status": {
+        "name": "Trạng thái"
+      },
+      "disk_size": {
+        "name": "Dung lượng"
+      },
+      "ups_status": {
+        "name": "Trạng thái"
+      },
+      "ups_battery_charge": {
+        "name": "Mức pin"
+      },
+      "ups_battery_low": {
+        "name": "Ngưỡng pin yếu"
+      },
+      "ups_battery_runtime": {
+        "name": "Thời gian dùng pin"
+      },
+      "ups_input_voltage": {
+        "name": "Điện áp đầu vào"
+      },
+      "ups_input_sensitivity": {
+        "name": "Độ nhạy đầu vào"
+      },
+      "ups_vendor_id": {
+        "name": "ID nhà sản xuất"
+      },
+      "ups_product_id": {
+        "name": "ID sản phẩm"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Firmware ADM"
+      }
+    }
+  }
+}

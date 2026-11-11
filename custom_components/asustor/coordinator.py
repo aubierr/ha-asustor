@@ -5,13 +5,15 @@ from __future__ import annotations
 from datetime import timedelta
 import logging
 import re
+import time
 from typing import Any
 
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from . import const as c
-from .snmp import AsustorSnmp, SnmpError, to_int, to_str, to_text
+from .snmp import AsustorSnmp, SnmpAuthError, SnmpError, to_int, to_str, to_text
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,9 +35,15 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             _LOGGER,
             config_entry=entry,
             name=c.DOMAIN,
-            update_interval=timedelta(seconds=c.DEFAULT_SCAN_INTERVAL),
+            update_interval=timedelta(
+                seconds=entry.options.get(c.CONF_SCAN_INTERVAL, c.DEFAULT_SCAN_INTERVAL)
+            ),
         )
         self.client = client
+        # None = default rule (eth* always, bond* when up); else explicit interface names.
+        self.interface_filter: list[str] | None = entry.options.get(c.CONF_INTERFACES)
+        # previous byte counters per interface, to derive throughput: {name: (t, rx, tx)}
+        self._prev_counters: dict[str, tuple[float, int | None, int | None]] = {}
         self.model: str | None = None
         self.sw_version: str | None = None
         self.hw_version: str | None = None
@@ -44,10 +52,18 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _async_update_data(self) -> dict[str, Any]:
         try:
             return await self._fetch()
+        except SnmpAuthError as err:
+            raise ConfigEntryAuthFailed(f"SNMPv3 credentials rejected: {err}") from err
         except SnmpError as err:
             raise UpdateFailed(f"SNMP error: {err}") from err
         except Exception as err:  # noqa: BLE001
             raise UpdateFailed(f"Cannot reach NAS: {err}") from err
+
+    async def async_list_interfaces(self) -> list[str]:
+        """Physical-looking interface names offered in the options flow."""
+        names = [to_str(v) for v in (await self._safe_walk(c.OID_IF_DESCR)).values()]
+        skip = ("lo", "veth", "br-", "docker", "virbr", "tun", "tap", "sit", "ip6", "dummy")
+        return [n for n in names if not n.startswith(skip)]
 
     async def _safe_walk(self, oid: str) -> dict[str, Any]:
         """Walk a subtree; unsupported/empty subtrees (or errors) yield {}."""
@@ -103,7 +119,7 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "temps": await self._temps(),
             "networks": await self._networks(),
             "volumes": await self._volumes(),
-            "interfaces": await self._interfaces(),
+            "interfaces": self._with_rates(await self._interfaces()),
             "disks": await self._disks(),
             "diskio": await self._diskio(),
             "ups": await self._ups(),
@@ -180,7 +196,10 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         for idx, d in descr.items():
             name = to_str(d)
             up = to_int(oper.get(idx)) == 1
-            if not (name.startswith("eth") or (name.startswith("bond") and up)):
+            if self.interface_filter is not None:
+                if name not in self.interface_filter:
+                    continue
+            elif not (name.startswith("eth") or (name.startswith("bond") and up)):
                 continue
             out[name] = {  # keyed by interface name (stable)
                 "name": name,
@@ -190,6 +209,25 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "tx": to_int(tx.get(idx)),
             }
         return out
+
+    def _with_rates(self, rows: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+        """Add rx_rate / tx_rate (Mbit/s) from the counter delta since the previous poll."""
+        now = time.monotonic()
+        for name, row in rows.items():
+            rx, tx = row.get("rx"), row.get("tx")
+            row["rx_rate"] = row["tx_rate"] = None
+            prev = self._prev_counters.get(name)
+            self._prev_counters[name] = (now, rx, tx)
+            if prev is None or now <= prev[0]:
+                continue
+            dt = now - prev[0]
+            for key, cur, old in (("rx_rate", rx, prev[1]), ("tx_rate", tx, prev[2])):
+                # a negative delta means the counter wrapped or the NAS rebooted: skip one sample
+                if cur is not None and old is not None and cur >= old:
+                    row[key] = round((cur - old) * 8 / 1e6 / dt, 3)
+        for gone in set(self._prev_counters) - set(rows):
+            del self._prev_counters[gone]
+        return rows
 
     async def _disks(self) -> dict[str, dict[str, Any]]:
         temps = await self._safe_walk(c.OID_AS_DISK_TEMP)

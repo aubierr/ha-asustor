@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "請先在 ADM 中啟用 SNMP（服務 > SNMP）。如果在那裡建立了使用者，請選擇 SNMP v3。",
+        "data": {
+          "host": "主機",
+          "name": "名稱",
+          "port": "連接埠",
+          "snmp_version": "SNMP 版本"
+        }
+      },
+      "reconfigure": {
+        "title": "重新設定 ASUSTOR NAS",
+        "description": "無需移除整合即可變更 NAS 位址或 SNMP 版本。",
+        "data": {
+          "host": "主機",
+          "port": "連接埠",
+          "snmp_version": "SNMP 版本"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "輸入在 ADM（服務 > SNMP）中設定的社群字串。",
+        "data": {
+          "community": "SNMP 社群字串"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "輸入在 ADM 中設定的 SNMP v3 使用者。密碼短語至少需要 8 個字元。",
+        "data": {
+          "username": "使用者名稱",
+          "auth_protocol": "驗證通訊協定",
+          "auth_key": "驗證密碼短語",
+          "priv_protocol": "加密通訊協定",
+          "priv_key": "加密密碼短語"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "無法透過 SNMP 連線至 NAS。請檢查主機、連接埠與憑證，以及 SNMP 是否已啟用。",
+      "invalid_auth": "NAS 拒絕了 SNMP v3 憑證。",
+      "key_too_short": "密碼短語至少需要 8 個字元。",
+      "priv_requires_auth": "加密需要驗證通訊協定。",
+      "already_configured": "其他項目已在使用此主機。"
+    },
+    "abort": {
+      "already_configured": "此 NAS 已設定。",
+      "reconfigure_successful": "NAS 設定已更新。",
+      "reauth_successful": "憑證已更新。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS 選項",
+        "description": "輪詢間隔與要追蹤的網路介面。儲存後將重新載入整合。",
+        "data": {
+          "scan_interval": "輪詢間隔（秒）",
+          "interfaces": "要追蹤的網路介面"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c（社群字串）",
+        "3": "v3（使用者、驗證、加密）"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "無",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "無",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "問題"
+      },
+      "connected": {
+        "name": "已連線"
+      },
+      "on_battery": {
+        "name": "電池供電"
+      },
+      "low_battery": {
+        "name": "電池電量低"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU 使用率"
+      },
+      "memory_usage": {
+        "name": "記憶體使用率"
+      },
+      "memory_total": {
+        "name": "記憶體總量"
+      },
+      "memory_available": {
+        "name": "可用記憶體"
+      },
+      "swap_usage": {
+        "name": "交換空間使用率"
+      },
+      "load_1": {
+        "name": "負載（1 分鐘）"
+      },
+      "load_5": {
+        "name": "負載（5 分鐘）"
+      },
+      "load_15": {
+        "name": "負載（15 分鐘）"
+      },
+      "uptime": {
+        "name": "運作時間"
+      },
+      "timezone": {
+        "name": "時區"
+      },
+      "adm_uptime": {
+        "name": "ADM 運作時間"
+      },
+      "system_time": {
+        "name": "系統時間"
+      },
+      "cpu_model": {
+        "name": "CPU 型號"
+      },
+      "cpu_core_usage": {
+        "name": "CPU 核心 {core} 使用率"
+      },
+      "fan_speed": {
+        "name": "風扇轉速"
+      },
+      "fan_speed_n": {
+        "name": "風扇 {fan} 轉速"
+      },
+      "cpu_temperature": {
+        "name": "CPU 溫度"
+      },
+      "system_temperature": {
+        "name": "系統溫度"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU 溫度 {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "系統溫度 {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4 位址"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6 位址"
+      },
+      "net_mac": {
+        "name": "{interface} MAC 位址"
+      },
+      "net_sent_adm": {
+        "name": "{interface} 已傳送（ADM 計數器）"
+      },
+      "net_received_adm": {
+        "name": "{interface} 已接收（ADM 計數器）"
+      },
+      "diskio_read": {
+        "name": "{device} 讀取"
+      },
+      "diskio_written": {
+        "name": "{device} 寫入"
+      },
+      "volume_usage": {
+        "name": "使用率"
+      },
+      "volume_free": {
+        "name": "可用空間"
+      },
+      "volume_used": {
+        "name": "已用空間"
+      },
+      "volume_total": {
+        "name": "總容量"
+      },
+      "volume_status": {
+        "name": "狀態"
+      },
+      "volume_raid_level": {
+        "name": "RAID 等級"
+      },
+      "volume_filesystem": {
+        "name": "檔案系統"
+      },
+      "if_received": {
+        "name": "已接收"
+      },
+      "if_sent": {
+        "name": "已傳送"
+      },
+      "if_receive_rate": {
+        "name": "接收速率"
+      },
+      "if_transmit_rate": {
+        "name": "傳送速率"
+      },
+      "if_link": {
+        "name": "連結"
+      },
+      "if_speed": {
+        "name": "速度"
+      },
+      "disk_temperature": {
+        "name": "溫度"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. 健康狀態"
+      },
+      "disk_status": {
+        "name": "狀態"
+      },
+      "disk_size": {
+        "name": "大小"
+      },
+      "ups_status": {
+        "name": "狀態"
+      },
+      "ups_battery_charge": {
+        "name": "電池電量"
+      },
+      "ups_battery_low": {
+        "name": "電池電量低門檻"
+      },
+      "ups_battery_runtime": {
+        "name": "電池續航時間"
+      },
+      "ups_input_voltage": {
+        "name": "輸入電壓"
+      },
+      "ups_input_sensitivity": {
+        "name": "輸入靈敏度"
+      },
+      "ups_vendor_id": {
+        "name": "廠商 ID"
+      },
+      "ups_product_id": {
+        "name": "產品 ID"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM 韌體"
+      }
+    }
+  }
+}

@@ -3,41 +3,117 @@
     "step": {
       "user": {
         "title": "ASUSTOR NAS (SNMP)",
-        "description": "Enable SNMP in ADM (Services > SNMP) first.",
+        "description": "Enable SNMP in ADM (Services > SNMP) first. Choose SNMP v3 if you set up users there.",
         "data": {
           "host": "Host",
           "name": "Name",
           "port": "Port",
+          "snmp_version": "SNMP version"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure ASUSTOR NAS",
+        "description": "Change the NAS address or SNMP version without removing the integration.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "snmp_version": "SNMP version"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Enter the community configured in ADM (Services > SNMP).",
+        "data": {
           "community": "SNMP community"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Enter the SNMP v3 user configured in ADM. Passphrases need at least 8 characters.",
+        "data": {
+          "username": "Username",
+          "auth_protocol": "Authentication protocol",
+          "auth_key": "Authentication passphrase",
+          "priv_protocol": "Encryption protocol",
+          "priv_key": "Encryption passphrase"
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot reach the NAS over SNMP (check host, community, and that SNMP is enabled)."
+      "cannot_connect": "Cannot reach the NAS over SNMP. Check the host, port and credentials, and that SNMP is enabled.",
+      "invalid_auth": "The NAS rejected the SNMP v3 credentials.",
+      "key_too_short": "Passphrases must be at least 8 characters.",
+      "priv_requires_auth": "Encryption requires an authentication protocol.",
+      "already_configured": "Another entry already uses this host."
     },
     "abort": {
-      "already_configured": "This NAS is already configured."
+      "already_configured": "This NAS is already configured.",
+      "reconfigure_successful": "NAS settings updated.",
+      "reauth_successful": "Credentials updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS options",
+        "description": "Polling interval and network interfaces to track. Saving reloads the integration.",
+        "data": {
+          "scan_interval": "Polling interval (seconds)",
+          "interfaces": "Network interfaces to track"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (user, authentication, encryption)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "None",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "None",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
     }
   },
   "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problem"
+      },
+      "connected": {
+        "name": "Connected"
+      },
+      "on_battery": {
+        "name": "On battery"
+      },
+      "low_battery": {
+        "name": "Low battery"
+      }
+    },
     "sensor": {
       "cpu_usage": {
         "name": "CPU usage"
       },
       "memory_usage": {
         "name": "Memory usage"
-      },
-      "load_1": {
-        "name": "Load 1 min"
-      },
-      "load_5": {
-        "name": "Load 5 min"
-      },
-      "load_15": {
-        "name": "Load 15 min"
-      },
-      "uptime": {
-        "name": "Uptime"
       },
       "memory_total": {
         "name": "Total memory"
@@ -47,6 +123,18 @@
       },
       "swap_usage": {
         "name": "Swap usage"
+      },
+      "load_1": {
+        "name": "Load (1 min)"
+      },
+      "load_5": {
+        "name": "Load (5 min)"
+      },
+      "load_15": {
+        "name": "Load (15 min)"
+      },
+      "uptime": {
+        "name": "Uptime"
       },
       "timezone": {
         "name": "Time zone"
@@ -59,6 +147,123 @@
       },
       "cpu_model": {
         "name": "CPU model"
+      },
+      "cpu_core_usage": {
+        "name": "CPU core {core} usage"
+      },
+      "fan_speed": {
+        "name": "Fan speed"
+      },
+      "fan_speed_n": {
+        "name": "Fan {fan} speed"
+      },
+      "cpu_temperature": {
+        "name": "CPU temperature"
+      },
+      "system_temperature": {
+        "name": "System temperature"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU temperature {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "System temperature {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4 address"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6 address"
+      },
+      "net_mac": {
+        "name": "{interface} MAC address"
+      },
+      "net_sent_adm": {
+        "name": "{interface} sent (ADM counter)"
+      },
+      "net_received_adm": {
+        "name": "{interface} received (ADM counter)"
+      },
+      "diskio_read": {
+        "name": "{device} read"
+      },
+      "diskio_written": {
+        "name": "{device} written"
+      },
+      "volume_usage": {
+        "name": "Usage"
+      },
+      "volume_free": {
+        "name": "Free space"
+      },
+      "volume_used": {
+        "name": "Used space"
+      },
+      "volume_total": {
+        "name": "Total size"
+      },
+      "volume_status": {
+        "name": "Status"
+      },
+      "volume_raid_level": {
+        "name": "RAID level"
+      },
+      "volume_filesystem": {
+        "name": "File system"
+      },
+      "if_received": {
+        "name": "Received"
+      },
+      "if_sent": {
+        "name": "Sent"
+      },
+      "if_receive_rate": {
+        "name": "Receive rate"
+      },
+      "if_transmit_rate": {
+        "name": "Transmit rate"
+      },
+      "if_link": {
+        "name": "Link"
+      },
+      "if_speed": {
+        "name": "Speed"
+      },
+      "disk_temperature": {
+        "name": "Temperature"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. health"
+      },
+      "disk_status": {
+        "name": "Status"
+      },
+      "disk_size": {
+        "name": "Size"
+      },
+      "ups_status": {
+        "name": "Status"
+      },
+      "ups_battery_charge": {
+        "name": "Battery charge"
+      },
+      "ups_battery_low": {
+        "name": "Low battery threshold"
+      },
+      "ups_battery_runtime": {
+        "name": "Battery runtime"
+      },
+      "ups_input_voltage": {
+        "name": "Input voltage"
+      },
+      "ups_input_sensitivity": {
+        "name": "Input sensitivity"
+      },
+      "ups_vendor_id": {
+        "name": "Vendor ID"
+      },
+      "ups_product_id": {
+        "name": "Product ID"
       }
     },
     "update": {

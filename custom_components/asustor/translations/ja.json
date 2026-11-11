@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "先に ADM で SNMP を有効にしてください（サービス > SNMP）。ユーザーを作成した場合は SNMP v3 を選択します。",
+        "data": {
+          "host": "ホスト",
+          "name": "名前",
+          "port": "ポート",
+          "snmp_version": "SNMP バージョン"
+        }
+      },
+      "reconfigure": {
+        "title": "ASUSTOR NAS の再設定",
+        "description": "連携を削除せずに NAS のアドレスや SNMP バージョンを変更します。",
+        "data": {
+          "host": "ホスト",
+          "port": "ポート",
+          "snmp_version": "SNMP バージョン"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "ADM（サービス > SNMP）で設定したコミュニティを入力してください。",
+        "data": {
+          "community": "SNMP コミュニティ"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "ADM で設定した SNMP v3 ユーザーを入力してください。パスフレーズは 8 文字以上が必要です。",
+        "data": {
+          "username": "ユーザー名",
+          "auth_protocol": "認証プロトコル",
+          "auth_key": "認証パスフレーズ",
+          "priv_protocol": "暗号化プロトコル",
+          "priv_key": "暗号化パスフレーズ"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "SNMP で NAS に接続できません。ホスト、ポート、認証情報、SNMP が有効かどうかを確認してください。",
+      "invalid_auth": "NAS が SNMP v3 の認証情報を拒否しました。",
+      "key_too_short": "パスフレーズは 8 文字以上にしてください。",
+      "priv_requires_auth": "暗号化には認証プロトコルが必要です。",
+      "already_configured": "このホストは別のエントリで既に使用されています。"
+    },
+    "abort": {
+      "already_configured": "この NAS は既に設定されています。",
+      "reconfigure_successful": "NAS の設定を更新しました。",
+      "reauth_successful": "認証情報を更新しました。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS のオプション",
+        "description": "ポーリング間隔と監視するネットワークインターフェース。保存すると連携が再読み込みされます。",
+        "data": {
+          "scan_interval": "ポーリング間隔（秒）",
+          "interfaces": "監視するネットワークインターフェース"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c（コミュニティ）",
+        "3": "v3（ユーザー、認証、暗号化）"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "なし",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "なし",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "問題"
+      },
+      "connected": {
+        "name": "接続済み"
+      },
+      "on_battery": {
+        "name": "バッテリー駆動"
+      },
+      "low_battery": {
+        "name": "バッテリー残量低下"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU 使用率"
+      },
+      "memory_usage": {
+        "name": "メモリ使用率"
+      },
+      "memory_total": {
+        "name": "メモリ合計"
+      },
+      "memory_available": {
+        "name": "利用可能メモリ"
+      },
+      "swap_usage": {
+        "name": "スワップ使用率"
+      },
+      "load_1": {
+        "name": "負荷（1 分）"
+      },
+      "load_5": {
+        "name": "負荷（5 分）"
+      },
+      "load_15": {
+        "name": "負荷（15 分）"
+      },
+      "uptime": {
+        "name": "稼働時間"
+      },
+      "timezone": {
+        "name": "タイムゾーン"
+      },
+      "adm_uptime": {
+        "name": "ADM 稼働時間"
+      },
+      "system_time": {
+        "name": "システム時刻"
+      },
+      "cpu_model": {
+        "name": "CPU モデル"
+      },
+      "cpu_core_usage": {
+        "name": "CPU コア {core} 使用率"
+      },
+      "fan_speed": {
+        "name": "ファン回転数"
+      },
+      "fan_speed_n": {
+        "name": "ファン {fan} 回転数"
+      },
+      "cpu_temperature": {
+        "name": "CPU 温度"
+      },
+      "system_temperature": {
+        "name": "システム温度"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU 温度 {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "システム温度 {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} の IPv4 アドレス"
+      },
+      "net_ipv6": {
+        "name": "{interface} の IPv6 アドレス"
+      },
+      "net_mac": {
+        "name": "{interface} の MAC アドレス"
+      },
+      "net_sent_adm": {
+        "name": "{interface} 送信量（ADM カウンター）"
+      },
+      "net_received_adm": {
+        "name": "{interface} 受信量（ADM カウンター）"
+      },
+      "diskio_read": {
+        "name": "{device} 読み取り"
+      },
+      "diskio_written": {
+        "name": "{device} 書き込み"
+      },
+      "volume_usage": {
+        "name": "使用率"
+      },
+      "volume_free": {
+        "name": "空き容量"
+      },
+      "volume_used": {
+        "name": "使用容量"
+      },
+      "volume_total": {
+        "name": "合計サイズ"
+      },
+      "volume_status": {
+        "name": "状態"
+      },
+      "volume_raid_level": {
+        "name": "RAID レベル"
+      },
+      "volume_filesystem": {
+        "name": "ファイルシステム"
+      },
+      "if_received": {
+        "name": "受信量"
+      },
+      "if_sent": {
+        "name": "送信量"
+      },
+      "if_receive_rate": {
+        "name": "受信速度"
+      },
+      "if_transmit_rate": {
+        "name": "送信速度"
+      },
+      "if_link": {
+        "name": "リンク"
+      },
+      "if_speed": {
+        "name": "速度"
+      },
+      "disk_temperature": {
+        "name": "温度"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. の状態"
+      },
+      "disk_status": {
+        "name": "状態"
+      },
+      "disk_size": {
+        "name": "サイズ"
+      },
+      "ups_status": {
+        "name": "状態"
+      },
+      "ups_battery_charge": {
+        "name": "バッテリー残量"
+      },
+      "ups_battery_low": {
+        "name": "バッテリー低下のしきい値"
+      },
+      "ups_battery_runtime": {
+        "name": "バッテリー駆動時間"
+      },
+      "ups_input_voltage": {
+        "name": "入力電圧"
+      },
+      "ups_input_sensitivity": {
+        "name": "入力感度"
+      },
+      "ups_vendor_id": {
+        "name": "ベンダー ID"
+      },
+      "ups_product_id": {
+        "name": "製品 ID"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM ファームウェア"
+      }
+    }
+  }
+}

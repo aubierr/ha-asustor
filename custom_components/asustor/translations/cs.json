@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Nejprve v ADM povolte SNMP (Služby > SNMP). Pokud jste tam vytvořili uživatele, zvolte SNMP v3.",
+        "data": {
+          "host": "Hostitel",
+          "name": "Název",
+          "port": "Port",
+          "snmp_version": "Verze SNMP"
+        }
+      },
+      "reconfigure": {
+        "title": "Překonfigurovat ASUSTOR NAS",
+        "description": "Změňte adresu NAS nebo verzi SNMP bez odebrání integrace.",
+        "data": {
+          "host": "Hostitel",
+          "port": "Port",
+          "snmp_version": "Verze SNMP"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Zadejte community nastavenou v ADM (Služby > SNMP).",
+        "data": {
+          "community": "Community SNMP"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Zadejte uživatele SNMP v3 nastaveného v ADM. Přístupové fráze musí mít alespoň 8 znaků.",
+        "data": {
+          "username": "Uživatelské jméno",
+          "auth_protocol": "Ověřovací protokol",
+          "auth_key": "Ověřovací přístupová fráze",
+          "priv_protocol": "Šifrovací protokol",
+          "priv_key": "Šifrovací přístupová fráze"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "NAS se nepodařilo kontaktovat přes SNMP. Zkontrolujte hostitele, port a přihlašovací údaje a zda je SNMP zapnuto.",
+      "invalid_auth": "NAS odmítl přihlašovací údaje SNMP v3.",
+      "key_too_short": "Přístupové fráze musí mít alespoň 8 znaků.",
+      "priv_requires_auth": "Šifrování vyžaduje ověřovací protokol.",
+      "already_configured": "Tohoto hostitele již používá jiný záznam."
+    },
+    "abort": {
+      "already_configured": "Toto NAS je již nakonfigurováno.",
+      "reconfigure_successful": "Nastavení NAS aktualizováno.",
+      "reauth_successful": "Přihlašovací údaje aktualizovány."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Možnosti ASUSTOR NAS",
+        "description": "Interval dotazování a sledovaná síťová rozhraní. Uložením se integrace znovu načte.",
+        "data": {
+          "scan_interval": "Interval dotazování (sekundy)",
+          "interfaces": "Sledovaná síťová rozhraní"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (uživatel, ověření, šifrování)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Žádný",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Žádný",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problém"
+      },
+      "connected": {
+        "name": "Připojeno"
+      },
+      "on_battery": {
+        "name": "Na baterii"
+      },
+      "low_battery": {
+        "name": "Slabá baterie"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Využití procesoru"
+      },
+      "memory_usage": {
+        "name": "Využití paměti"
+      },
+      "memory_total": {
+        "name": "Celková paměť"
+      },
+      "memory_available": {
+        "name": "Dostupná paměť"
+      },
+      "swap_usage": {
+        "name": "Využití swapu"
+      },
+      "load_1": {
+        "name": "Zátěž (1 min)"
+      },
+      "load_5": {
+        "name": "Zátěž (5 min)"
+      },
+      "load_15": {
+        "name": "Zátěž (15 min)"
+      },
+      "uptime": {
+        "name": "Doba provozu"
+      },
+      "timezone": {
+        "name": "Časové pásmo"
+      },
+      "adm_uptime": {
+        "name": "Doba provozu ADM"
+      },
+      "system_time": {
+        "name": "Systémový čas"
+      },
+      "cpu_model": {
+        "name": "Model procesoru"
+      },
+      "cpu_core_usage": {
+        "name": "Využití jádra procesoru {core}"
+      },
+      "fan_speed": {
+        "name": "Otáčky ventilátoru"
+      },
+      "fan_speed_n": {
+        "name": "Otáčky ventilátoru {fan}"
+      },
+      "cpu_temperature": {
+        "name": "Teplota procesoru"
+      },
+      "system_temperature": {
+        "name": "Teplota systému"
+      },
+      "cpu_temperature_n": {
+        "name": "Teplota procesoru {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Teplota systému {sensor}"
+      },
+      "net_ipv4": {
+        "name": "Adresa IPv4 {interface}"
+      },
+      "net_ipv6": {
+        "name": "Adresa IPv6 {interface}"
+      },
+      "net_mac": {
+        "name": "Adresa MAC {interface}"
+      },
+      "net_sent_adm": {
+        "name": "{interface} odesláno (počítadlo ADM)"
+      },
+      "net_received_adm": {
+        "name": "{interface} přijato (počítadlo ADM)"
+      },
+      "diskio_read": {
+        "name": "{device} přečteno"
+      },
+      "diskio_written": {
+        "name": "{device} zapsáno"
+      },
+      "volume_usage": {
+        "name": "Využití"
+      },
+      "volume_free": {
+        "name": "Volné místo"
+      },
+      "volume_used": {
+        "name": "Využité místo"
+      },
+      "volume_total": {
+        "name": "Celková velikost"
+      },
+      "volume_status": {
+        "name": "Stav"
+      },
+      "volume_raid_level": {
+        "name": "Úroveň RAID"
+      },
+      "volume_filesystem": {
+        "name": "Souborový systém"
+      },
+      "if_received": {
+        "name": "Přijato"
+      },
+      "if_sent": {
+        "name": "Odesláno"
+      },
+      "if_receive_rate": {
+        "name": "Rychlost příjmu"
+      },
+      "if_transmit_rate": {
+        "name": "Rychlost odesílání"
+      },
+      "if_link": {
+        "name": "Spojení"
+      },
+      "if_speed": {
+        "name": "Rychlost"
+      },
+      "disk_temperature": {
+        "name": "Teplota"
+      },
+      "disk_health": {
+        "name": "Stav S.M.A.R.T."
+      },
+      "disk_status": {
+        "name": "Stav"
+      },
+      "disk_size": {
+        "name": "Velikost"
+      },
+      "ups_status": {
+        "name": "Stav"
+      },
+      "ups_battery_charge": {
+        "name": "Nabití baterie"
+      },
+      "ups_battery_low": {
+        "name": "Práh slabé baterie"
+      },
+      "ups_battery_runtime": {
+        "name": "Doba provozu na baterii"
+      },
+      "ups_input_voltage": {
+        "name": "Vstupní napětí"
+      },
+      "ups_input_sensitivity": {
+        "name": "Citlivost vstupu"
+      },
+      "ups_vendor_id": {
+        "name": "ID výrobce"
+      },
+      "ups_product_id": {
+        "name": "ID produktu"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Firmware ADM"
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
@@ -37,8 +38,16 @@ def device_info(
     info = DeviceInfo(
         identifiers={(DOMAIN, f"{entry.entry_id}_{kind}_{idx}")},
         name=f"{entry.title} {row.get('name', f'{kind} {idx}')}",
-        via_device=(DOMAIN, entry.entry_id),
     )
+    # `via_device` (identifier tuple) is deprecated: link to the parent by registry id.
+    registry = dr.async_get(coordinator.hass)
+    parent_key = (DOMAIN, entry.entry_id)
+    if hasattr(registry, "async_get_device_by_identifier"):  # HA >= 2026.x (async_get_device is deprecated)
+        parent = registry.async_get_device_by_identifier(parent_key, entry.entry_id)
+    else:
+        parent = registry.async_get_device(identifiers={parent_key})
+    if parent is not None:
+        info["via_device_id"] = parent.id
     if group == "disks":
         info["model"] = row.get("model")
     elif group == "volumes":
@@ -50,3 +59,43 @@ def device_info(
     elif group == "ups":
         info["model"] = row.get("name")
     return info
+
+
+def present_identifiers(entry: ConfigEntry, data: dict) -> set[str]:
+    """Identifier strings of every child device currently reported by the NAS."""
+    return {
+        f"{entry.entry_id}_{kind}_{idx}"
+        for group, kind in _CHILD_GROUPS.items()
+        for idx in data.get(group, {})
+    }
+
+
+def is_child_identifier(entry: ConfigEntry, ident: str) -> bool:
+    return ident != entry.entry_id and ident.startswith(f"{entry.entry_id}_")
+
+
+# A NAS always has at least one disk and one volume: an empty table means a failed
+# read, not a removal, so those groups are never pruned from an empty result.
+_NEVER_EMPTY_GROUPS = {"disk", "volume"}
+PRUNE_AFTER_MISSES = 3
+
+
+def prune_stale_devices(hass, entry: ConfigEntry, data: dict, missing: dict[str, int]) -> None:
+    """Remove disk/volume/interface/UPS devices that vanished for several polls in a row."""
+    present = present_identifiers(entry, data)
+    registry = dr.async_get(hass)
+    for dev in dr.async_entries_for_config_entry(registry, entry.entry_id):
+        for domain, ident in dev.identifiers:
+            if domain != DOMAIN or not is_child_identifier(entry, ident):
+                continue
+            if ident in present:
+                missing.pop(ident, None)
+                continue
+            kind = ident[len(entry.entry_id) + 1 :].split("_", 1)[0]
+            group = next((g for g, k in _CHILD_GROUPS.items() if k == kind), None)
+            if group is None or (kind in _NEVER_EMPTY_GROUPS and not data.get(group)):
+                continue
+            missing[ident] = missing.get(ident, 0) + 1
+            if missing[ident] >= PRUNE_AFTER_MISSES:
+                registry.async_remove_device(dev.id)
+                missing.pop(ident, None)

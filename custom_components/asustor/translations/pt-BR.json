@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Ative primeiro o SNMP no ADM (Serviços > SNMP). Escolha SNMP v3 se você criou usuários lá.",
+        "data": {
+          "host": "Host",
+          "name": "Nome",
+          "port": "Porta",
+          "snmp_version": "Versão do SNMP"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigurar NAS ASUSTOR",
+        "description": "Altere o endereço do NAS ou a versão do SNMP sem remover a integração.",
+        "data": {
+          "host": "Host",
+          "port": "Porta",
+          "snmp_version": "Versão do SNMP"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Informe a community configurada no ADM (Serviços > SNMP).",
+        "data": {
+          "community": "Community SNMP"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Informe o usuário SNMP v3 configurado no ADM. As frases secretas precisam ter pelo menos 8 caracteres.",
+        "data": {
+          "username": "Nome de usuário",
+          "auth_protocol": "Protocolo de autenticação",
+          "auth_key": "Frase secreta de autenticação",
+          "priv_protocol": "Protocolo de criptografia",
+          "priv_key": "Frase secreta de criptografia"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Não foi possível acessar o NAS por SNMP. Verifique host, porta e credenciais, e se o SNMP está ativado.",
+      "invalid_auth": "O NAS recusou as credenciais SNMP v3.",
+      "key_too_short": "As frases secretas devem ter pelo menos 8 caracteres.",
+      "priv_requires_auth": "A criptografia exige um protocolo de autenticação.",
+      "already_configured": "Outra entrada já usa este host."
+    },
+    "abort": {
+      "already_configured": "Este NAS já está configurado.",
+      "reconfigure_successful": "Configurações do NAS atualizadas.",
+      "reauth_successful": "Credenciais atualizadas."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opções do NAS ASUSTOR",
+        "description": "Intervalo de consulta e interfaces de rede a monitorar. Salvar recarrega a integração.",
+        "data": {
+          "scan_interval": "Intervalo de consulta (segundos)",
+          "interfaces": "Interfaces de rede a monitorar"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (usuário, autenticação, criptografia)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Nenhum",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Nenhum",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problema"
+      },
+      "connected": {
+        "name": "Conectado"
+      },
+      "on_battery": {
+        "name": "Na bateria"
+      },
+      "low_battery": {
+        "name": "Bateria fraca"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Uso da CPU"
+      },
+      "memory_usage": {
+        "name": "Uso de memória"
+      },
+      "memory_total": {
+        "name": "Memória total"
+      },
+      "memory_available": {
+        "name": "Memória disponível"
+      },
+      "swap_usage": {
+        "name": "Uso de swap"
+      },
+      "load_1": {
+        "name": "Carga (1 min)"
+      },
+      "load_5": {
+        "name": "Carga (5 min)"
+      },
+      "load_15": {
+        "name": "Carga (15 min)"
+      },
+      "uptime": {
+        "name": "Tempo ativo"
+      },
+      "timezone": {
+        "name": "Fuso horário"
+      },
+      "adm_uptime": {
+        "name": "Tempo ativo do ADM"
+      },
+      "system_time": {
+        "name": "Hora do sistema"
+      },
+      "cpu_model": {
+        "name": "Modelo da CPU"
+      },
+      "cpu_core_usage": {
+        "name": "Uso do núcleo {core} da CPU"
+      },
+      "fan_speed": {
+        "name": "Velocidade do ventilador"
+      },
+      "fan_speed_n": {
+        "name": "Velocidade do ventilador {fan}"
+      },
+      "cpu_temperature": {
+        "name": "Temperatura da CPU"
+      },
+      "system_temperature": {
+        "name": "Temperatura do sistema"
+      },
+      "cpu_temperature_n": {
+        "name": "Temperatura da CPU {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Temperatura do sistema {sensor}"
+      },
+      "net_ipv4": {
+        "name": "Endereço IPv4 de {interface}"
+      },
+      "net_ipv6": {
+        "name": "Endereço IPv6 de {interface}"
+      },
+      "net_mac": {
+        "name": "Endereço MAC de {interface}"
+      },
+      "net_sent_adm": {
+        "name": "{interface} enviado (contador do ADM)"
+      },
+      "net_received_adm": {
+        "name": "{interface} recebido (contador do ADM)"
+      },
+      "diskio_read": {
+        "name": "{device} lido"
+      },
+      "diskio_written": {
+        "name": "{device} gravado"
+      },
+      "volume_usage": {
+        "name": "Uso"
+      },
+      "volume_free": {
+        "name": "Espaço livre"
+      },
+      "volume_used": {
+        "name": "Espaço usado"
+      },
+      "volume_total": {
+        "name": "Tamanho total"
+      },
+      "volume_status": {
+        "name": "Status"
+      },
+      "volume_raid_level": {
+        "name": "Nível RAID"
+      },
+      "volume_filesystem": {
+        "name": "Sistema de arquivos"
+      },
+      "if_received": {
+        "name": "Recebido"
+      },
+      "if_sent": {
+        "name": "Enviado"
+      },
+      "if_receive_rate": {
+        "name": "Taxa de recepção"
+      },
+      "if_transmit_rate": {
+        "name": "Taxa de envio"
+      },
+      "if_link": {
+        "name": "Link"
+      },
+      "if_speed": {
+        "name": "Velocidade"
+      },
+      "disk_temperature": {
+        "name": "Temperatura"
+      },
+      "disk_health": {
+        "name": "Saúde S.M.A.R.T."
+      },
+      "disk_status": {
+        "name": "Status"
+      },
+      "disk_size": {
+        "name": "Tamanho"
+      },
+      "ups_status": {
+        "name": "Status"
+      },
+      "ups_battery_charge": {
+        "name": "Carga da bateria"
+      },
+      "ups_battery_low": {
+        "name": "Limite de bateria fraca"
+      },
+      "ups_battery_runtime": {
+        "name": "Autonomia"
+      },
+      "ups_input_voltage": {
+        "name": "Tensão de entrada"
+      },
+      "ups_input_sensitivity": {
+        "name": "Sensibilidade de entrada"
+      },
+      "ups_vendor_id": {
+        "name": "ID do fabricante"
+      },
+      "ups_product_id": {
+        "name": "ID do produto"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Firmware do ADM"
+      }
+    }
+  }
+}

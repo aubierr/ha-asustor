@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Ota ensin SNMP käyttöön ADM:ssä (Palvelut > SNMP). Valitse SNMP v3, jos olet luonut siellä käyttäjiä.",
+        "data": {
+          "host": "Isäntä",
+          "name": "Nimi",
+          "port": "Portti",
+          "snmp_version": "SNMP-versio"
+        }
+      },
+      "reconfigure": {
+        "title": "Määritä ASUSTOR NAS uudelleen",
+        "description": "Muuta NAS-osoitetta tai SNMP-versiota poistamatta integraatiota.",
+        "data": {
+          "host": "Isäntä",
+          "port": "Portti",
+          "snmp_version": "SNMP-versio"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Anna ADM:ssä (Palvelut > SNMP) määritetty community.",
+        "data": {
+          "community": "SNMP-community"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Anna ADM:ssä määritetty SNMP v3 -käyttäjä. Salalauseiden on oltava vähintään 8 merkkiä.",
+        "data": {
+          "username": "Käyttäjänimi",
+          "auth_protocol": "Todennusprotokolla",
+          "auth_key": "Todennuksen salalause",
+          "priv_protocol": "Salausprotokolla",
+          "priv_key": "Salauksen salalause"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "NAS:iin ei saada yhteyttä SNMP:llä. Tarkista isäntä, portti ja tunnistetiedot sekä että SNMP on käytössä.",
+      "invalid_auth": "NAS hylkäsi SNMP v3 -tunnistetiedot.",
+      "key_too_short": "Salalauseiden on oltava vähintään 8 merkkiä.",
+      "priv_requires_auth": "Salaus vaatii todennusprotokollan.",
+      "already_configured": "Toinen merkintä käyttää jo tätä isäntää."
+    },
+    "abort": {
+      "already_configured": "Tämä NAS on jo määritetty.",
+      "reconfigure_successful": "NAS-asetukset päivitetty.",
+      "reauth_successful": "Tunnistetiedot päivitetty."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS -asetukset",
+        "description": "Kyselyväli ja seurattavat verkkoliitännät. Tallennus lataa integraation uudelleen.",
+        "data": {
+          "scan_interval": "Kyselyväli (sekuntia)",
+          "interfaces": "Seurattavat verkkoliitännät"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (käyttäjä, todennus, salaus)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Ei mitään",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Ei mitään",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Ongelma"
+      },
+      "connected": {
+        "name": "Yhdistetty"
+      },
+      "on_battery": {
+        "name": "Akkukäytöllä"
+      },
+      "low_battery": {
+        "name": "Akku vähissä"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Suorittimen käyttö"
+      },
+      "memory_usage": {
+        "name": "Muistin käyttö"
+      },
+      "memory_total": {
+        "name": "Muisti yhteensä"
+      },
+      "memory_available": {
+        "name": "Käytettävissä oleva muisti"
+      },
+      "swap_usage": {
+        "name": "Swap-tilan käyttö"
+      },
+      "load_1": {
+        "name": "Kuormitus (1 min)"
+      },
+      "load_5": {
+        "name": "Kuormitus (5 min)"
+      },
+      "load_15": {
+        "name": "Kuormitus (15 min)"
+      },
+      "uptime": {
+        "name": "Käyttöaika"
+      },
+      "timezone": {
+        "name": "Aikavyöhyke"
+      },
+      "adm_uptime": {
+        "name": "ADM:n käyttöaika"
+      },
+      "system_time": {
+        "name": "Järjestelmän aika"
+      },
+      "cpu_model": {
+        "name": "Suorittimen malli"
+      },
+      "cpu_core_usage": {
+        "name": "Suorittimen ytimen {core} käyttö"
+      },
+      "fan_speed": {
+        "name": "Tuulettimen nopeus"
+      },
+      "fan_speed_n": {
+        "name": "Tuulettimen {fan} nopeus"
+      },
+      "cpu_temperature": {
+        "name": "Suorittimen lämpötila"
+      },
+      "system_temperature": {
+        "name": "Järjestelmän lämpötila"
+      },
+      "cpu_temperature_n": {
+        "name": "Suorittimen lämpötila {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Järjestelmän lämpötila {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4-osoite"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6-osoite"
+      },
+      "net_mac": {
+        "name": "{interface} MAC-osoite"
+      },
+      "net_sent_adm": {
+        "name": "{interface} lähetetty (ADM-laskuri)"
+      },
+      "net_received_adm": {
+        "name": "{interface} vastaanotettu (ADM-laskuri)"
+      },
+      "diskio_read": {
+        "name": "{device} luettu"
+      },
+      "diskio_written": {
+        "name": "{device} kirjoitettu"
+      },
+      "volume_usage": {
+        "name": "Käyttö"
+      },
+      "volume_free": {
+        "name": "Vapaa tila"
+      },
+      "volume_used": {
+        "name": "Käytetty tila"
+      },
+      "volume_total": {
+        "name": "Kokonaiskoko"
+      },
+      "volume_status": {
+        "name": "Tila"
+      },
+      "volume_raid_level": {
+        "name": "RAID-taso"
+      },
+      "volume_filesystem": {
+        "name": "Tiedostojärjestelmä"
+      },
+      "if_received": {
+        "name": "Vastaanotettu"
+      },
+      "if_sent": {
+        "name": "Lähetetty"
+      },
+      "if_receive_rate": {
+        "name": "Vastaanottonopeus"
+      },
+      "if_transmit_rate": {
+        "name": "Lähetysnopeus"
+      },
+      "if_link": {
+        "name": "Yhteys"
+      },
+      "if_speed": {
+        "name": "Nopeus"
+      },
+      "disk_temperature": {
+        "name": "Lämpötila"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T.-kunto"
+      },
+      "disk_status": {
+        "name": "Tila"
+      },
+      "disk_size": {
+        "name": "Koko"
+      },
+      "ups_status": {
+        "name": "Tila"
+      },
+      "ups_battery_charge": {
+        "name": "Akun varaus"
+      },
+      "ups_battery_low": {
+        "name": "Akun alhaisen varauksen raja"
+      },
+      "ups_battery_runtime": {
+        "name": "Akun käyttöaika"
+      },
+      "ups_input_voltage": {
+        "name": "Tulojännite"
+      },
+      "ups_input_sensitivity": {
+        "name": "Tulon herkkyys"
+      },
+      "ups_vendor_id": {
+        "name": "Valmistajan tunnus"
+      },
+      "ups_product_id": {
+        "name": "Tuotetunnus"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM-laiteohjelmisto"
+      }
+    }
+  }
+}

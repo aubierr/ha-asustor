@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Önce ADM'de SNMP'yi etkinleştirin (Hizmetler > SNMP). Orada kullanıcı oluşturduysanız SNMP v3'ü seçin.",
+        "data": {
+          "host": "Ana bilgisayar",
+          "name": "Ad",
+          "port": "Bağlantı noktası",
+          "snmp_version": "SNMP sürümü"
+        }
+      },
+      "reconfigure": {
+        "title": "ASUSTOR NAS'ı yeniden yapılandır",
+        "description": "Entegrasyonu kaldırmadan NAS adresini veya SNMP sürümünü değiştirin.",
+        "data": {
+          "host": "Ana bilgisayar",
+          "port": "Bağlantı noktası",
+          "snmp_version": "SNMP sürümü"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "ADM'de (Hizmetler > SNMP) yapılandırılan community değerini girin.",
+        "data": {
+          "community": "SNMP community"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "ADM'de yapılandırılan SNMP v3 kullanıcısını girin. Parolalar en az 8 karakter olmalıdır.",
+        "data": {
+          "username": "Kullanıcı adı",
+          "auth_protocol": "Kimlik doğrulama protokolü",
+          "auth_key": "Kimlik doğrulama parolası",
+          "priv_protocol": "Şifreleme protokolü",
+          "priv_key": "Şifreleme parolası"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "NAS'a SNMP ile ulaşılamıyor. Ana bilgisayarı, bağlantı noktasını ve kimlik bilgilerini, ayrıca SNMP'nin etkin olduğunu kontrol edin.",
+      "invalid_auth": "NAS, SNMP v3 kimlik bilgilerini reddetti.",
+      "key_too_short": "Parolalar en az 8 karakter olmalıdır.",
+      "priv_requires_auth": "Şifreleme için bir kimlik doğrulama protokolü gerekir.",
+      "already_configured": "Başka bir kayıt bu ana bilgisayarı zaten kullanıyor."
+    },
+    "abort": {
+      "already_configured": "Bu NAS zaten yapılandırılmış.",
+      "reconfigure_successful": "NAS ayarları güncellendi.",
+      "reauth_successful": "Kimlik bilgileri güncellendi."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS seçenekleri",
+        "description": "Sorgulama aralığı ve izlenecek ağ arayüzleri. Kaydetmek entegrasyonu yeniden yükler.",
+        "data": {
+          "scan_interval": "Sorgulama aralığı (saniye)",
+          "interfaces": "İzlenecek ağ arayüzleri"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (kullanıcı, kimlik doğrulama, şifreleme)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Yok",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Yok",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Sorun"
+      },
+      "connected": {
+        "name": "Bağlı"
+      },
+      "on_battery": {
+        "name": "Pilde"
+      },
+      "low_battery": {
+        "name": "Pil zayıf"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU kullanımı"
+      },
+      "memory_usage": {
+        "name": "Bellek kullanımı"
+      },
+      "memory_total": {
+        "name": "Toplam bellek"
+      },
+      "memory_available": {
+        "name": "Kullanılabilir bellek"
+      },
+      "swap_usage": {
+        "name": "Takas kullanımı"
+      },
+      "load_1": {
+        "name": "Yük (1 dk)"
+      },
+      "load_5": {
+        "name": "Yük (5 dk)"
+      },
+      "load_15": {
+        "name": "Yük (15 dk)"
+      },
+      "uptime": {
+        "name": "Çalışma süresi"
+      },
+      "timezone": {
+        "name": "Saat dilimi"
+      },
+      "adm_uptime": {
+        "name": "ADM çalışma süresi"
+      },
+      "system_time": {
+        "name": "Sistem saati"
+      },
+      "cpu_model": {
+        "name": "CPU modeli"
+      },
+      "cpu_core_usage": {
+        "name": "CPU çekirdek {core} kullanımı"
+      },
+      "fan_speed": {
+        "name": "Fan hızı"
+      },
+      "fan_speed_n": {
+        "name": "Fan {fan} hızı"
+      },
+      "cpu_temperature": {
+        "name": "CPU sıcaklığı"
+      },
+      "system_temperature": {
+        "name": "Sistem sıcaklığı"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU sıcaklığı {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Sistem sıcaklığı {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4 adresi"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6 adresi"
+      },
+      "net_mac": {
+        "name": "{interface} MAC adresi"
+      },
+      "net_sent_adm": {
+        "name": "{interface} gönderilen (ADM sayacı)"
+      },
+      "net_received_adm": {
+        "name": "{interface} alınan (ADM sayacı)"
+      },
+      "diskio_read": {
+        "name": "{device} okunan"
+      },
+      "diskio_written": {
+        "name": "{device} yazılan"
+      },
+      "volume_usage": {
+        "name": "Kullanım"
+      },
+      "volume_free": {
+        "name": "Boş alan"
+      },
+      "volume_used": {
+        "name": "Kullanılan alan"
+      },
+      "volume_total": {
+        "name": "Toplam boyut"
+      },
+      "volume_status": {
+        "name": "Durum"
+      },
+      "volume_raid_level": {
+        "name": "RAID düzeyi"
+      },
+      "volume_filesystem": {
+        "name": "Dosya sistemi"
+      },
+      "if_received": {
+        "name": "Alınan"
+      },
+      "if_sent": {
+        "name": "Gönderilen"
+      },
+      "if_receive_rate": {
+        "name": "Alma hızı"
+      },
+      "if_transmit_rate": {
+        "name": "Gönderme hızı"
+      },
+      "if_link": {
+        "name": "Bağlantı"
+      },
+      "if_speed": {
+        "name": "Hız"
+      },
+      "disk_temperature": {
+        "name": "Sıcaklık"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. durumu"
+      },
+      "disk_status": {
+        "name": "Durum"
+      },
+      "disk_size": {
+        "name": "Boyut"
+      },
+      "ups_status": {
+        "name": "Durum"
+      },
+      "ups_battery_charge": {
+        "name": "Pil şarjı"
+      },
+      "ups_battery_low": {
+        "name": "Düşük pil eşiği"
+      },
+      "ups_battery_runtime": {
+        "name": "Pil süresi"
+      },
+      "ups_input_voltage": {
+        "name": "Giriş gerilimi"
+      },
+      "ups_input_sensitivity": {
+        "name": "Giriş hassasiyeti"
+      },
+      "ups_vendor_id": {
+        "name": "Üretici kimliği"
+      },
+      "ups_product_id": {
+        "name": "Ürün kimliği"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM üretici yazılımı"
+      }
+    }
+  }
+}

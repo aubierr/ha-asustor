@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "请先在 ADM 中启用 SNMP（服务 > SNMP）。如果在那里创建了用户，请选择 SNMP v3。",
+        "data": {
+          "host": "主机",
+          "name": "名称",
+          "port": "端口",
+          "snmp_version": "SNMP 版本"
+        }
+      },
+      "reconfigure": {
+        "title": "重新配置 ASUSTOR NAS",
+        "description": "无需移除集成即可更改 NAS 地址或 SNMP 版本。",
+        "data": {
+          "host": "主机",
+          "port": "端口",
+          "snmp_version": "SNMP 版本"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "输入在 ADM（服务 > SNMP）中配置的团体名。",
+        "data": {
+          "community": "SNMP 团体名"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "输入在 ADM 中配置的 SNMP v3 用户。密码短语至少需要 8 个字符。",
+        "data": {
+          "username": "用户名",
+          "auth_protocol": "认证协议",
+          "auth_key": "认证密码短语",
+          "priv_protocol": "加密协议",
+          "priv_key": "加密密码短语"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法通过 SNMP 连接 NAS。请检查主机、端口和凭据，以及 SNMP 是否已启用。",
+      "invalid_auth": "NAS 拒绝了 SNMP v3 凭据。",
+      "key_too_short": "密码短语至少需要 8 个字符。",
+      "priv_requires_auth": "加密需要认证协议。",
+      "already_configured": "其他条目已在使用此主机。"
+    },
+    "abort": {
+      "already_configured": "此 NAS 已配置。",
+      "reconfigure_successful": "NAS 设置已更新。",
+      "reauth_successful": "凭据已更新。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS 选项",
+        "description": "轮询间隔和要跟踪的网络接口。保存后将重新加载集成。",
+        "data": {
+          "scan_interval": "轮询间隔（秒）",
+          "interfaces": "要跟踪的网络接口"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c（团体名）",
+        "3": "v3（用户、认证、加密）"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "无",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "无",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "问题"
+      },
+      "connected": {
+        "name": "已连接"
+      },
+      "on_battery": {
+        "name": "电池供电"
+      },
+      "low_battery": {
+        "name": "电池电量低"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU 使用率"
+      },
+      "memory_usage": {
+        "name": "内存使用率"
+      },
+      "memory_total": {
+        "name": "总内存"
+      },
+      "memory_available": {
+        "name": "可用内存"
+      },
+      "swap_usage": {
+        "name": "交换空间使用率"
+      },
+      "load_1": {
+        "name": "负载（1 分钟）"
+      },
+      "load_5": {
+        "name": "负载（5 分钟）"
+      },
+      "load_15": {
+        "name": "负载（15 分钟）"
+      },
+      "uptime": {
+        "name": "运行时间"
+      },
+      "timezone": {
+        "name": "时区"
+      },
+      "adm_uptime": {
+        "name": "ADM 运行时间"
+      },
+      "system_time": {
+        "name": "系统时间"
+      },
+      "cpu_model": {
+        "name": "CPU 型号"
+      },
+      "cpu_core_usage": {
+        "name": "CPU 核心 {core} 使用率"
+      },
+      "fan_speed": {
+        "name": "风扇转速"
+      },
+      "fan_speed_n": {
+        "name": "风扇 {fan} 转速"
+      },
+      "cpu_temperature": {
+        "name": "CPU 温度"
+      },
+      "system_temperature": {
+        "name": "系统温度"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU 温度 {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "系统温度 {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4 地址"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6 地址"
+      },
+      "net_mac": {
+        "name": "{interface} MAC 地址"
+      },
+      "net_sent_adm": {
+        "name": "{interface} 已发送（ADM 计数器）"
+      },
+      "net_received_adm": {
+        "name": "{interface} 已接收（ADM 计数器）"
+      },
+      "diskio_read": {
+        "name": "{device} 读取"
+      },
+      "diskio_written": {
+        "name": "{device} 写入"
+      },
+      "volume_usage": {
+        "name": "使用率"
+      },
+      "volume_free": {
+        "name": "可用空间"
+      },
+      "volume_used": {
+        "name": "已用空间"
+      },
+      "volume_total": {
+        "name": "总大小"
+      },
+      "volume_status": {
+        "name": "状态"
+      },
+      "volume_raid_level": {
+        "name": "RAID 级别"
+      },
+      "volume_filesystem": {
+        "name": "文件系统"
+      },
+      "if_received": {
+        "name": "已接收"
+      },
+      "if_sent": {
+        "name": "已发送"
+      },
+      "if_receive_rate": {
+        "name": "接收速率"
+      },
+      "if_transmit_rate": {
+        "name": "发送速率"
+      },
+      "if_link": {
+        "name": "链路"
+      },
+      "if_speed": {
+        "name": "速度"
+      },
+      "disk_temperature": {
+        "name": "温度"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. 健康状态"
+      },
+      "disk_status": {
+        "name": "状态"
+      },
+      "disk_size": {
+        "name": "大小"
+      },
+      "ups_status": {
+        "name": "状态"
+      },
+      "ups_battery_charge": {
+        "name": "电池电量"
+      },
+      "ups_battery_low": {
+        "name": "电池电量低阈值"
+      },
+      "ups_battery_runtime": {
+        "name": "电池续航时间"
+      },
+      "ups_input_voltage": {
+        "name": "输入电压"
+      },
+      "ups_input_sensitivity": {
+        "name": "输入灵敏度"
+      },
+      "ups_vendor_id": {
+        "name": "厂商 ID"
+      },
+      "ups_product_id": {
+        "name": "产品 ID"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM 固件"
+      }
+    }
+  }
+}

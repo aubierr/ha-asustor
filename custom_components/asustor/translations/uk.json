@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Спершу ввімкніть SNMP в ADM (Служби > SNMP). Виберіть SNMP v3, якщо ви створили там користувачів.",
+        "data": {
+          "host": "Хост",
+          "name": "Назва",
+          "port": "Порт",
+          "snmp_version": "Версія SNMP"
+        }
+      },
+      "reconfigure": {
+        "title": "Переналаштування ASUSTOR NAS",
+        "description": "Змініть адресу NAS або версію SNMP, не видаляючи інтеграцію.",
+        "data": {
+          "host": "Хост",
+          "port": "Порт",
+          "snmp_version": "Версія SNMP"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Введіть community, налаштоване в ADM (Служби > SNMP).",
+        "data": {
+          "community": "Community SNMP"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Введіть користувача SNMP v3, налаштованого в ADM. Парольні фрази мають містити щонайменше 8 символів.",
+        "data": {
+          "username": "Ім'я користувача",
+          "auth_protocol": "Протокол автентифікації",
+          "auth_key": "Парольна фраза автентифікації",
+          "priv_protocol": "Протокол шифрування",
+          "priv_key": "Парольна фраза шифрування"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Не вдалося підключитися до NAS через SNMP. Перевірте хост, порт і облікові дані, а також чи ввімкнено SNMP.",
+      "invalid_auth": "NAS відхилив облікові дані SNMP v3.",
+      "key_too_short": "Парольні фрази мають містити щонайменше 8 символів.",
+      "priv_requires_auth": "Для шифрування потрібен протокол автентифікації.",
+      "already_configured": "Цей хост уже використовується іншим записом."
+    },
+    "abort": {
+      "already_configured": "Цей NAS уже налаштовано.",
+      "reconfigure_successful": "Налаштування NAS оновлено.",
+      "reauth_successful": "Облікові дані оновлено."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Параметри ASUSTOR NAS",
+        "description": "Інтервал опитування та мережеві інтерфейси для відстеження. Після збереження інтеграція перезавантажиться.",
+        "data": {
+          "scan_interval": "Інтервал опитування (секунди)",
+          "interfaces": "Мережеві інтерфейси для відстеження"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (користувач, автентифікація, шифрування)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Немає",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Немає",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Проблема"
+      },
+      "connected": {
+        "name": "Підключено"
+      },
+      "on_battery": {
+        "name": "Від батареї"
+      },
+      "low_battery": {
+        "name": "Низький заряд батареї"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Завантаження ЦП"
+      },
+      "memory_usage": {
+        "name": "Використання пам'яті"
+      },
+      "memory_total": {
+        "name": "Усього пам'яті"
+      },
+      "memory_available": {
+        "name": "Доступна пам'ять"
+      },
+      "swap_usage": {
+        "name": "Використання підкачки"
+      },
+      "load_1": {
+        "name": "Навантаження (1 хв)"
+      },
+      "load_5": {
+        "name": "Навантаження (5 хв)"
+      },
+      "load_15": {
+        "name": "Навантаження (15 хв)"
+      },
+      "uptime": {
+        "name": "Час роботи"
+      },
+      "timezone": {
+        "name": "Часовий пояс"
+      },
+      "adm_uptime": {
+        "name": "Час роботи ADM"
+      },
+      "system_time": {
+        "name": "Системний час"
+      },
+      "cpu_model": {
+        "name": "Модель ЦП"
+      },
+      "cpu_core_usage": {
+        "name": "Завантаження ядра ЦП {core}"
+      },
+      "fan_speed": {
+        "name": "Швидкість вентилятора"
+      },
+      "fan_speed_n": {
+        "name": "Швидкість вентилятора {fan}"
+      },
+      "cpu_temperature": {
+        "name": "Температура ЦП"
+      },
+      "system_temperature": {
+        "name": "Температура системи"
+      },
+      "cpu_temperature_n": {
+        "name": "Температура ЦП {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Температура системи {sensor}"
+      },
+      "net_ipv4": {
+        "name": "IPv4-адреса {interface}"
+      },
+      "net_ipv6": {
+        "name": "IPv6-адреса {interface}"
+      },
+      "net_mac": {
+        "name": "MAC-адреса {interface}"
+      },
+      "net_sent_adm": {
+        "name": "{interface} надіслано (лічильник ADM)"
+      },
+      "net_received_adm": {
+        "name": "{interface} отримано (лічильник ADM)"
+      },
+      "diskio_read": {
+        "name": "{device} прочитано"
+      },
+      "diskio_written": {
+        "name": "{device} записано"
+      },
+      "volume_usage": {
+        "name": "Використання"
+      },
+      "volume_free": {
+        "name": "Вільне місце"
+      },
+      "volume_used": {
+        "name": "Зайняте місце"
+      },
+      "volume_total": {
+        "name": "Загальний розмір"
+      },
+      "volume_status": {
+        "name": "Стан"
+      },
+      "volume_raid_level": {
+        "name": "Рівень RAID"
+      },
+      "volume_filesystem": {
+        "name": "Файлова система"
+      },
+      "if_received": {
+        "name": "Отримано"
+      },
+      "if_sent": {
+        "name": "Надіслано"
+      },
+      "if_receive_rate": {
+        "name": "Швидкість приймання"
+      },
+      "if_transmit_rate": {
+        "name": "Швидкість передавання"
+      },
+      "if_link": {
+        "name": "З'єднання"
+      },
+      "if_speed": {
+        "name": "Швидкість"
+      },
+      "disk_temperature": {
+        "name": "Температура"
+      },
+      "disk_health": {
+        "name": "Стан S.M.A.R.T."
+      },
+      "disk_status": {
+        "name": "Стан"
+      },
+      "disk_size": {
+        "name": "Розмір"
+      },
+      "ups_status": {
+        "name": "Стан"
+      },
+      "ups_battery_charge": {
+        "name": "Заряд батареї"
+      },
+      "ups_battery_low": {
+        "name": "Поріг низького заряду"
+      },
+      "ups_battery_runtime": {
+        "name": "Час роботи від батареї"
+      },
+      "ups_input_voltage": {
+        "name": "Вхідна напруга"
+      },
+      "ups_input_sensitivity": {
+        "name": "Чутливість входу"
+      },
+      "ups_vendor_id": {
+        "name": "ID виробника"
+      },
+      "ups_product_id": {
+        "name": "ID продукту"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Прошивка ADM"
+      }
+    }
+  }
+}

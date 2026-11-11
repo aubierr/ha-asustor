@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Сначала включите SNMP в ADM (Службы > SNMP). Выберите SNMP v3, если вы создали там пользователей.",
+        "data": {
+          "host": "Хост",
+          "name": "Название",
+          "port": "Порт",
+          "snmp_version": "Версия SNMP"
+        }
+      },
+      "reconfigure": {
+        "title": "Перенастройка ASUSTOR NAS",
+        "description": "Измените адрес NAS или версию SNMP, не удаляя интеграцию.",
+        "data": {
+          "host": "Хост",
+          "port": "Порт",
+          "snmp_version": "Версия SNMP"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Введите community, настроенное в ADM (Службы > SNMP).",
+        "data": {
+          "community": "Community SNMP"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Введите пользователя SNMP v3, настроенного в ADM. Парольные фразы должны содержать не менее 8 символов.",
+        "data": {
+          "username": "Имя пользователя",
+          "auth_protocol": "Протокол аутентификации",
+          "auth_key": "Парольная фраза аутентификации",
+          "priv_protocol": "Протокол шифрования",
+          "priv_key": "Парольная фраза шифрования"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Не удалось подключиться к NAS по SNMP. Проверьте хост, порт и учётные данные, а также включён ли SNMP.",
+      "invalid_auth": "NAS отклонил учётные данные SNMP v3.",
+      "key_too_short": "Парольные фразы должны содержать не менее 8 символов.",
+      "priv_requires_auth": "Для шифрования требуется протокол аутентификации.",
+      "already_configured": "Этот хост уже используется другой записью."
+    },
+    "abort": {
+      "already_configured": "Этот NAS уже настроен.",
+      "reconfigure_successful": "Настройки NAS обновлены.",
+      "reauth_successful": "Учётные данные обновлены."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Параметры ASUSTOR NAS",
+        "description": "Интервал опроса и отслеживаемые сетевые интерфейсы. После сохранения интеграция перезагрузится.",
+        "data": {
+          "scan_interval": "Интервал опроса (секунды)",
+          "interfaces": "Отслеживаемые сетевые интерфейсы"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (пользователь, аутентификация, шифрование)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Нет",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Нет",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Проблема"
+      },
+      "connected": {
+        "name": "Подключено"
+      },
+      "on_battery": {
+        "name": "От батареи"
+      },
+      "low_battery": {
+        "name": "Низкий заряд батареи"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Загрузка ЦП"
+      },
+      "memory_usage": {
+        "name": "Использование памяти"
+      },
+      "memory_total": {
+        "name": "Всего памяти"
+      },
+      "memory_available": {
+        "name": "Доступная память"
+      },
+      "swap_usage": {
+        "name": "Использование подкачки"
+      },
+      "load_1": {
+        "name": "Нагрузка (1 мин)"
+      },
+      "load_5": {
+        "name": "Нагрузка (5 мин)"
+      },
+      "load_15": {
+        "name": "Нагрузка (15 мин)"
+      },
+      "uptime": {
+        "name": "Время работы"
+      },
+      "timezone": {
+        "name": "Часовой пояс"
+      },
+      "adm_uptime": {
+        "name": "Время работы ADM"
+      },
+      "system_time": {
+        "name": "Системное время"
+      },
+      "cpu_model": {
+        "name": "Модель ЦП"
+      },
+      "cpu_core_usage": {
+        "name": "Загрузка ядра ЦП {core}"
+      },
+      "fan_speed": {
+        "name": "Скорость вентилятора"
+      },
+      "fan_speed_n": {
+        "name": "Скорость вентилятора {fan}"
+      },
+      "cpu_temperature": {
+        "name": "Температура ЦП"
+      },
+      "system_temperature": {
+        "name": "Температура системы"
+      },
+      "cpu_temperature_n": {
+        "name": "Температура ЦП {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Температура системы {sensor}"
+      },
+      "net_ipv4": {
+        "name": "IPv4-адрес {interface}"
+      },
+      "net_ipv6": {
+        "name": "IPv6-адрес {interface}"
+      },
+      "net_mac": {
+        "name": "MAC-адрес {interface}"
+      },
+      "net_sent_adm": {
+        "name": "{interface} отправлено (счётчик ADM)"
+      },
+      "net_received_adm": {
+        "name": "{interface} получено (счётчик ADM)"
+      },
+      "diskio_read": {
+        "name": "{device} прочитано"
+      },
+      "diskio_written": {
+        "name": "{device} записано"
+      },
+      "volume_usage": {
+        "name": "Использование"
+      },
+      "volume_free": {
+        "name": "Свободное место"
+      },
+      "volume_used": {
+        "name": "Занятое место"
+      },
+      "volume_total": {
+        "name": "Общий размер"
+      },
+      "volume_status": {
+        "name": "Состояние"
+      },
+      "volume_raid_level": {
+        "name": "Уровень RAID"
+      },
+      "volume_filesystem": {
+        "name": "Файловая система"
+      },
+      "if_received": {
+        "name": "Получено"
+      },
+      "if_sent": {
+        "name": "Отправлено"
+      },
+      "if_receive_rate": {
+        "name": "Скорость приёма"
+      },
+      "if_transmit_rate": {
+        "name": "Скорость передачи"
+      },
+      "if_link": {
+        "name": "Соединение"
+      },
+      "if_speed": {
+        "name": "Скорость"
+      },
+      "disk_temperature": {
+        "name": "Температура"
+      },
+      "disk_health": {
+        "name": "Состояние S.M.A.R.T."
+      },
+      "disk_status": {
+        "name": "Состояние"
+      },
+      "disk_size": {
+        "name": "Размер"
+      },
+      "ups_status": {
+        "name": "Состояние"
+      },
+      "ups_battery_charge": {
+        "name": "Заряд батареи"
+      },
+      "ups_battery_low": {
+        "name": "Порог низкого заряда"
+      },
+      "ups_battery_runtime": {
+        "name": "Время работы от батареи"
+      },
+      "ups_input_voltage": {
+        "name": "Входное напряжение"
+      },
+      "ups_input_sensitivity": {
+        "name": "Чувствительность входа"
+      },
+      "ups_vendor_id": {
+        "name": "ID производителя"
+      },
+      "ups_product_id": {
+        "name": "ID продукта"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Прошивка ADM"
+      }
+    }
+  }
+}

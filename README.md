@@ -23,7 +23,7 @@ Intégration personnalisée pour surveiller un NAS **ASUSTOR** (ADM) depuis Home
 | Matériel | Température CPU et système, vitesse des ventilateurs |
 | Volumes | Utilisation (%), espace libre/utilisé/total, état, niveau RAID, système de fichiers |
 | Disques | Température, santé S.M.A.R.T., état, taille ; modèle et type en attributs |
-| Réseau | Pour `eth*` / `bond*` : octets reçus/envoyés, état du lien, vitesse ; adresses IPv4/IPv6 et MAC du NAS |
+| Réseau | Pour `eth*` / `bond*` : octets reçus/envoyés, **débit en réception/émission (Mbit/s)**, état du lien, vitesse ; adresses IPv4/IPv6 et MAC du NAS |
 | Disques (E/S) | Octets lus/écrits par disque, si le NAS expose UCD-DISKIO |
 | Onduleur (UPS) | État, charge batterie, autonomie, seuil de batterie faible, tension d'entrée, sensibilité — uniquement si un onduleur est connecté |
 | Appareil | Modèle, version ADM, version BIOS, numéro de série |
@@ -37,6 +37,17 @@ Les entités sont rangées par appareil dans Home Assistant :
 - **Un appareil par volume** (`Volume 1`…) : utilisation, espace, état, RAID, système de fichiers
 - **Un appareil par interface réseau** (`eth0`, `eth1`, `bond0`…) : débit cumulé, lien, vitesse
 - **Un appareil UPS**, si un onduleur est connecté
+
+### Capteurs binaires
+
+Pratiques pour les automatisations et les notifications :
+
+| Appareil | Capteur | Actif quand… |
+|---|---|---|
+| Disque | **Problème** | santé S.M.A.R.T. `Risky`/`Dangerous`/`Bad`, ou état `Abnormal` |
+| Volume | **Problème** | état `Degraded`, `Failed` ou `Inactive` (les resynchronisations en cours ne comptent pas) |
+| Interface | **Connecté** | le lien réseau est actif |
+| UPS | **Sur batterie**, **Batterie faible** | l'onduleur signale `OB` / `LB` |
 
 Chaque appareil enfant est rattaché au NAS (« via le NAS »).
 
@@ -53,6 +64,13 @@ Les volumes, disques et interfaces sont détectés automatiquement.
 Dans ADM : **Services → SNMP**, activer le service et définir une communauté (par défaut `public`).
 
 > Pour limiter l'exposition, préférez une communauté personnalisée et restreignez l'accès à l'IP de Home Assistant.
+
+### SNMP v2c ou v3
+
+- **v2c** : une communauté (mot de passe en clair sur le réseau). Simple, adapté à un réseau local de confiance.
+- **v3** : un utilisateur avec **authentification** (MD5, SHA, SHA-224/256/384/512) et **chiffrement** (DES, 3DES, AES-128/192/256). Créez l'utilisateur dans ADM (*Services → SNMP*), puis choisissez « v3 » à l'ajout de l'intégration. Les phrases secrètes font au moins 8 caractères.
+
+Si les identifiants v3 sont refusés plus tard, Home Assistant propose de les ressaisir (ré-authentification). Avec v2c, une mauvaise communauté ressemble à un NAS éteint : aucune ré-authentification n'est possible.
 
 ## Installation
 
@@ -77,6 +95,25 @@ Ou : **Paramètres → Appareils et services → Ajouter une intégration → AS
 
 Les données sont rafraîchies toutes les 60 secondes.
 
+### Nettoyage automatique
+
+Si un disque, un volume, une interface ou un onduleur disparaît du NAS (3 relevés consécutifs), son appareil est supprimé. Un tableau de disques ou de volumes **vide** (lecture ratée) ne supprime jamais rien. Vous pouvez aussi supprimer à la main un appareil qui n'existe plus, depuis sa page.
+
+## Options et reconfiguration
+
+- **Options** (⚙ sur l'intégration) : intervalle de rafraîchissement (10 s à 1 h, 60 s par défaut) et interfaces réseau à suivre. L'enregistrement recharge l'intégration.
+- **Reconfigurer** (⋮ → *Reconfigurer*) : changer l'IP, le port, la version SNMP (v2c ↔ v3) ou les identifiants sans supprimer l'intégration.
+
+## Diagnostics
+
+Sur la page de l'appareil : ⋮ → **Télécharger les diagnostics**. Le fichier contient les données lues et un dump du MIB ASUSTOR ; l'IP, la communauté, le numéro de série, les adresses MAC/IP, le fuseau horaire et l'identifiant ASUSTOR sont masqués. Joignez-le à une issue pour faire prendre en charge un autre modèle.
+
+## Langues
+
+Interface et noms d'entités traduits en : English, Français, Deutsch, Español, Italiano, Português (PT et BR), Nederlands, Polski, Русский, Українська, Türkçe, Čeština, Svenska, Dansk, Norsk bokmål, Suomi, Magyar, Română, 日本語, 한국어, 简体中文, 繁體中文, Tiếng Việt.
+
+Une traduction à corriger ? Les fichiers sont dans `custom_components/asustor/translations/` : une pull request suffit.
+
 ## Compatibilité
 
 Testé sur un **AS5202T** (ADM 5.1.4), avec les fichiers MIB fournis par ce NAS. Les OID ASUSTOR (`1.3.6.1.4.1.44738`) peuvent varier selon les modèles : les capteurs absents sont simplement ignorés. Les capteurs UPS suivent le MIB officiel mais n'ont pas pu être testés avec un onduleur réel. Pour vérifier un modèle :
@@ -98,6 +135,6 @@ Les issues et pull requests sont les bienvenues, notamment des sorties `snmpwalk
 
 ## Licence
 
-Version 0.1.0-beta.3 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.4 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
 
 > ASUSTOR et son logo sont des marques de leur propriétaire (ASUSTOR Inc.). Ce projet est indépendant et n'est ni affilié ni approuvé par ASUSTOR ; le logo n'est utilisé que pour identifier les NAS compatibles.

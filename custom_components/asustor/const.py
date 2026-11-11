@@ -6,7 +6,21 @@ CONF_COMMUNITY = "community"
 
 DEFAULT_PORT = 161
 DEFAULT_COMMUNITY = "public"
+CONF_SNMP_VERSION = "snmp_version"
+CONF_USERNAME = "username"
+CONF_AUTH_PROTOCOL = "auth_protocol"
+CONF_AUTH_KEY = "auth_key"
+CONF_PRIV_PROTOCOL = "priv_protocol"
+CONF_PRIV_KEY = "priv_key"
+SNMP_V2C = "2c"
+SNMP_V3 = "3"
+
+CONF_SCAN_INTERVAL = "scan_interval"
+CONF_INTERFACES = "interfaces"
+
 DEFAULT_SCAN_INTERVAL = 60
+MIN_SCAN_INTERVAL = 10
+MAX_SCAN_INTERVAL = 3600
 
 # Standard MIBs (net-snmp based, available on ADM once SNMP is enabled)
 OID_SYS_DESCR = "1.3.6.1.2.1.1.1.0"

@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Először kapcsolja be az SNMP-t az ADM-ben (Szolgáltatások > SNMP). Válassza az SNMP v3-at, ha ott felhasználókat hozott létre.",
+        "data": {
+          "host": "Gazdagép",
+          "name": "Név",
+          "port": "Port",
+          "snmp_version": "SNMP-verzió"
+        }
+      },
+      "reconfigure": {
+        "title": "ASUSTOR NAS újrakonfigurálása",
+        "description": "Módosítsa a NAS címét vagy az SNMP-verziót az integráció eltávolítása nélkül.",
+        "data": {
+          "host": "Gazdagép",
+          "port": "Port",
+          "snmp_version": "SNMP-verzió"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Adja meg az ADM-ben (Szolgáltatások > SNMP) beállított community-t.",
+        "data": {
+          "community": "SNMP community"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Adja meg az ADM-ben beállított SNMP v3 felhasználót. A jelmondatoknak legalább 8 karakter hosszúnak kell lenniük.",
+        "data": {
+          "username": "Felhasználónév",
+          "auth_protocol": "Hitelesítési protokoll",
+          "auth_key": "Hitelesítési jelmondat",
+          "priv_protocol": "Titkosítási protokoll",
+          "priv_key": "Titkosítási jelmondat"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "A NAS nem érhető el SNMP-n keresztül. Ellenőrizze a gazdagépet, a portot és a hitelesítő adatokat, valamint hogy az SNMP be van-e kapcsolva.",
+      "invalid_auth": "A NAS elutasította az SNMP v3 hitelesítő adatokat.",
+      "key_too_short": "A jelmondatoknak legalább 8 karakter hosszúnak kell lenniük.",
+      "priv_requires_auth": "A titkosításhoz hitelesítési protokoll szükséges.",
+      "already_configured": "Egy másik bejegyzés már használja ezt a gazdagépet."
+    },
+    "abort": {
+      "already_configured": "Ez a NAS már be van állítva.",
+      "reconfigure_successful": "A NAS beállításai frissítve.",
+      "reauth_successful": "A hitelesítő adatok frissítve."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS beállításai",
+        "description": "Lekérdezési időköz és a figyelendő hálózati interfészek. A mentés újratölti az integrációt.",
+        "data": {
+          "scan_interval": "Lekérdezési időköz (másodperc)",
+          "interfaces": "Figyelendő hálózati interfészek"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (felhasználó, hitelesítés, titkosítás)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Nincs",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Nincs",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Probléma"
+      },
+      "connected": {
+        "name": "Csatlakoztatva"
+      },
+      "on_battery": {
+        "name": "Akkumulátorról"
+      },
+      "low_battery": {
+        "name": "Alacsony akkumulátorszint"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU-használat"
+      },
+      "memory_usage": {
+        "name": "Memóriahasználat"
+      },
+      "memory_total": {
+        "name": "Összes memória"
+      },
+      "memory_available": {
+        "name": "Elérhető memória"
+      },
+      "swap_usage": {
+        "name": "Swap-használat"
+      },
+      "load_1": {
+        "name": "Terhelés (1 perc)"
+      },
+      "load_5": {
+        "name": "Terhelés (5 perc)"
+      },
+      "load_15": {
+        "name": "Terhelés (15 perc)"
+      },
+      "uptime": {
+        "name": "Üzemidő"
+      },
+      "timezone": {
+        "name": "Időzóna"
+      },
+      "adm_uptime": {
+        "name": "ADM üzemidő"
+      },
+      "system_time": {
+        "name": "Rendszeridő"
+      },
+      "cpu_model": {
+        "name": "CPU modell"
+      },
+      "cpu_core_usage": {
+        "name": "{core}. CPU-mag használata"
+      },
+      "fan_speed": {
+        "name": "Ventilátor fordulatszáma"
+      },
+      "fan_speed_n": {
+        "name": "{fan}. ventilátor fordulatszáma"
+      },
+      "cpu_temperature": {
+        "name": "CPU hőmérséklet"
+      },
+      "system_temperature": {
+        "name": "Rendszerhőmérséklet"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU hőmérséklet {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Rendszerhőmérséklet {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4-cím"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6-cím"
+      },
+      "net_mac": {
+        "name": "{interface} MAC-cím"
+      },
+      "net_sent_adm": {
+        "name": "{interface} elküldve (ADM-számláló)"
+      },
+      "net_received_adm": {
+        "name": "{interface} fogadva (ADM-számláló)"
+      },
+      "diskio_read": {
+        "name": "{device} olvasva"
+      },
+      "diskio_written": {
+        "name": "{device} írva"
+      },
+      "volume_usage": {
+        "name": "Használat"
+      },
+      "volume_free": {
+        "name": "Szabad hely"
+      },
+      "volume_used": {
+        "name": "Használt hely"
+      },
+      "volume_total": {
+        "name": "Teljes méret"
+      },
+      "volume_status": {
+        "name": "Állapot"
+      },
+      "volume_raid_level": {
+        "name": "RAID-szint"
+      },
+      "volume_filesystem": {
+        "name": "Fájlrendszer"
+      },
+      "if_received": {
+        "name": "Fogadva"
+      },
+      "if_sent": {
+        "name": "Elküldve"
+      },
+      "if_receive_rate": {
+        "name": "Fogadási sebesség"
+      },
+      "if_transmit_rate": {
+        "name": "Küldési sebesség"
+      },
+      "if_link": {
+        "name": "Kapcsolat"
+      },
+      "if_speed": {
+        "name": "Sebesség"
+      },
+      "disk_temperature": {
+        "name": "Hőmérséklet"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. állapot"
+      },
+      "disk_status": {
+        "name": "Állapot"
+      },
+      "disk_size": {
+        "name": "Méret"
+      },
+      "ups_status": {
+        "name": "Állapot"
+      },
+      "ups_battery_charge": {
+        "name": "Akkumulátor töltöttsége"
+      },
+      "ups_battery_low": {
+        "name": "Alacsony akkumulátor küszöbe"
+      },
+      "ups_battery_runtime": {
+        "name": "Akkumulátoros üzemidő"
+      },
+      "ups_input_voltage": {
+        "name": "Bemeneti feszültség"
+      },
+      "ups_input_sensitivity": {
+        "name": "Bemeneti érzékenység"
+      },
+      "ups_vendor_id": {
+        "name": "Gyártóazonosító"
+      },
+      "ups_product_id": {
+        "name": "Termékazonosító"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM firmware"
+      }
+    }
+  }
+}

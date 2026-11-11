@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Activați mai întâi SNMP în ADM (Servicii > SNMP). Alegeți SNMP v3 dacă ați creat utilizatori acolo.",
+        "data": {
+          "host": "Gazdă",
+          "name": "Nume",
+          "port": "Port",
+          "snmp_version": "Versiune SNMP"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigurare NAS ASUSTOR",
+        "description": "Schimbați adresa NAS sau versiunea SNMP fără a elimina integrarea.",
+        "data": {
+          "host": "Gazdă",
+          "port": "Port",
+          "snmp_version": "Versiune SNMP"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Introduceți community-ul configurat în ADM (Servicii > SNMP).",
+        "data": {
+          "community": "Community SNMP"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Introduceți utilizatorul SNMP v3 configurat în ADM. Frazele de acces trebuie să aibă cel puțin 8 caractere.",
+        "data": {
+          "username": "Nume utilizator",
+          "auth_protocol": "Protocol de autentificare",
+          "auth_key": "Frază de acces pentru autentificare",
+          "priv_protocol": "Protocol de criptare",
+          "priv_key": "Frază de acces pentru criptare"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nu se poate contacta NAS-ul prin SNMP. Verificați gazda, portul și datele de autentificare și dacă SNMP este activat.",
+      "invalid_auth": "NAS-ul a respins datele de autentificare SNMP v3.",
+      "key_too_short": "Frazele de acces trebuie să aibă cel puțin 8 caractere.",
+      "priv_requires_auth": "Criptarea necesită un protocol de autentificare.",
+      "already_configured": "O altă intrare folosește deja această gazdă."
+    },
+    "abort": {
+      "already_configured": "Acest NAS este deja configurat.",
+      "reconfigure_successful": "Setările NAS au fost actualizate.",
+      "reauth_successful": "Datele de autentificare au fost actualizate."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opțiuni NAS ASUSTOR",
+        "description": "Intervalul de interogare și interfețele de rețea urmărite. Salvarea reîncarcă integrarea.",
+        "data": {
+          "scan_interval": "Interval de interogare (secunde)",
+          "interfaces": "Interfețe de rețea urmărite"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (utilizator, autentificare, criptare)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Niciunul",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Niciunul",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Problemă"
+      },
+      "connected": {
+        "name": "Conectat"
+      },
+      "on_battery": {
+        "name": "Pe baterie"
+      },
+      "low_battery": {
+        "name": "Baterie slabă"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "Utilizare CPU"
+      },
+      "memory_usage": {
+        "name": "Utilizare memorie"
+      },
+      "memory_total": {
+        "name": "Memorie totală"
+      },
+      "memory_available": {
+        "name": "Memorie disponibilă"
+      },
+      "swap_usage": {
+        "name": "Utilizare swap"
+      },
+      "load_1": {
+        "name": "Încărcare (1 min)"
+      },
+      "load_5": {
+        "name": "Încărcare (5 min)"
+      },
+      "load_15": {
+        "name": "Încărcare (15 min)"
+      },
+      "uptime": {
+        "name": "Timp de funcționare"
+      },
+      "timezone": {
+        "name": "Fus orar"
+      },
+      "adm_uptime": {
+        "name": "Timp de funcționare ADM"
+      },
+      "system_time": {
+        "name": "Ora sistemului"
+      },
+      "cpu_model": {
+        "name": "Model CPU"
+      },
+      "cpu_core_usage": {
+        "name": "Utilizare nucleu CPU {core}"
+      },
+      "fan_speed": {
+        "name": "Viteza ventilatorului"
+      },
+      "fan_speed_n": {
+        "name": "Viteza ventilatorului {fan}"
+      },
+      "cpu_temperature": {
+        "name": "Temperatură CPU"
+      },
+      "system_temperature": {
+        "name": "Temperatura sistemului"
+      },
+      "cpu_temperature_n": {
+        "name": "Temperatură CPU {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Temperatura sistemului {sensor}"
+      },
+      "net_ipv4": {
+        "name": "Adresă IPv4 {interface}"
+      },
+      "net_ipv6": {
+        "name": "Adresă IPv6 {interface}"
+      },
+      "net_mac": {
+        "name": "Adresă MAC {interface}"
+      },
+      "net_sent_adm": {
+        "name": "{interface} trimis (contor ADM)"
+      },
+      "net_received_adm": {
+        "name": "{interface} primit (contor ADM)"
+      },
+      "diskio_read": {
+        "name": "{device} citit"
+      },
+      "diskio_written": {
+        "name": "{device} scris"
+      },
+      "volume_usage": {
+        "name": "Utilizare"
+      },
+      "volume_free": {
+        "name": "Spațiu liber"
+      },
+      "volume_used": {
+        "name": "Spațiu utilizat"
+      },
+      "volume_total": {
+        "name": "Dimensiune totală"
+      },
+      "volume_status": {
+        "name": "Stare"
+      },
+      "volume_raid_level": {
+        "name": "Nivel RAID"
+      },
+      "volume_filesystem": {
+        "name": "Sistem de fișiere"
+      },
+      "if_received": {
+        "name": "Primit"
+      },
+      "if_sent": {
+        "name": "Trimis"
+      },
+      "if_receive_rate": {
+        "name": "Viteză de recepție"
+      },
+      "if_transmit_rate": {
+        "name": "Viteză de transmisie"
+      },
+      "if_link": {
+        "name": "Conexiune"
+      },
+      "if_speed": {
+        "name": "Viteză"
+      },
+      "disk_temperature": {
+        "name": "Temperatură"
+      },
+      "disk_health": {
+        "name": "Stare S.M.A.R.T."
+      },
+      "disk_status": {
+        "name": "Stare"
+      },
+      "disk_size": {
+        "name": "Dimensiune"
+      },
+      "ups_status": {
+        "name": "Stare"
+      },
+      "ups_battery_charge": {
+        "name": "Încărcare baterie"
+      },
+      "ups_battery_low": {
+        "name": "Prag baterie slabă"
+      },
+      "ups_battery_runtime": {
+        "name": "Autonomie"
+      },
+      "ups_input_voltage": {
+        "name": "Tensiune de intrare"
+      },
+      "ups_input_sensitivity": {
+        "name": "Sensibilitate intrare"
+      },
+      "ups_vendor_id": {
+        "name": "ID producător"
+      },
+      "ups_product_id": {
+        "name": "ID produs"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Firmware ADM"
+      }
+    }
+  }
+}

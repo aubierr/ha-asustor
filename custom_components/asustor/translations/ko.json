@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "먼저 ADM에서 SNMP를 켜세요(서비스 > SNMP). 사용자를 만들었다면 SNMP v3를 선택하세요.",
+        "data": {
+          "host": "호스트",
+          "name": "이름",
+          "port": "포트",
+          "snmp_version": "SNMP 버전"
+        }
+      },
+      "reconfigure": {
+        "title": "ASUSTOR NAS 재구성",
+        "description": "통합 구성요소를 제거하지 않고 NAS 주소나 SNMP 버전을 변경합니다.",
+        "data": {
+          "host": "호스트",
+          "port": "포트",
+          "snmp_version": "SNMP 버전"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "ADM(서비스 > SNMP)에서 설정한 커뮤니티를 입력하세요.",
+        "data": {
+          "community": "SNMP 커뮤니티"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "ADM에서 설정한 SNMP v3 사용자를 입력하세요. 암호 문구는 8자 이상이어야 합니다.",
+        "data": {
+          "username": "사용자 이름",
+          "auth_protocol": "인증 프로토콜",
+          "auth_key": "인증 암호 문구",
+          "priv_protocol": "암호화 프로토콜",
+          "priv_key": "암호화 암호 문구"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "SNMP로 NAS에 연결할 수 없습니다. 호스트, 포트, 자격 증명과 SNMP 활성화 여부를 확인하세요.",
+      "invalid_auth": "NAS가 SNMP v3 자격 증명을 거부했습니다.",
+      "key_too_short": "암호 문구는 8자 이상이어야 합니다.",
+      "priv_requires_auth": "암호화에는 인증 프로토콜이 필요합니다.",
+      "already_configured": "다른 항목이 이미 이 호스트를 사용 중입니다."
+    },
+    "abort": {
+      "already_configured": "이 NAS는 이미 구성되어 있습니다.",
+      "reconfigure_successful": "NAS 설정이 업데이트되었습니다.",
+      "reauth_successful": "자격 증명이 업데이트되었습니다."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS 옵션",
+        "description": "폴링 간격과 추적할 네트워크 인터페이스입니다. 저장하면 통합 구성요소가 다시 로드됩니다.",
+        "data": {
+          "scan_interval": "폴링 간격(초)",
+          "interfaces": "추적할 네트워크 인터페이스"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c(커뮤니티)",
+        "3": "v3(사용자, 인증, 암호화)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "없음",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "없음",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "문제"
+      },
+      "connected": {
+        "name": "연결됨"
+      },
+      "on_battery": {
+        "name": "배터리 사용 중"
+      },
+      "low_battery": {
+        "name": "배터리 부족"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU 사용률"
+      },
+      "memory_usage": {
+        "name": "메모리 사용률"
+      },
+      "memory_total": {
+        "name": "전체 메모리"
+      },
+      "memory_available": {
+        "name": "사용 가능한 메모리"
+      },
+      "swap_usage": {
+        "name": "스왑 사용률"
+      },
+      "load_1": {
+        "name": "부하(1분)"
+      },
+      "load_5": {
+        "name": "부하(5분)"
+      },
+      "load_15": {
+        "name": "부하(15분)"
+      },
+      "uptime": {
+        "name": "가동 시간"
+      },
+      "timezone": {
+        "name": "시간대"
+      },
+      "adm_uptime": {
+        "name": "ADM 가동 시간"
+      },
+      "system_time": {
+        "name": "시스템 시간"
+      },
+      "cpu_model": {
+        "name": "CPU 모델"
+      },
+      "cpu_core_usage": {
+        "name": "CPU 코어 {core} 사용률"
+      },
+      "fan_speed": {
+        "name": "팬 속도"
+      },
+      "fan_speed_n": {
+        "name": "팬 {fan} 속도"
+      },
+      "cpu_temperature": {
+        "name": "CPU 온도"
+      },
+      "system_temperature": {
+        "name": "시스템 온도"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU 온도 {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "시스템 온도 {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4 주소"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6 주소"
+      },
+      "net_mac": {
+        "name": "{interface} MAC 주소"
+      },
+      "net_sent_adm": {
+        "name": "{interface} 송신(ADM 카운터)"
+      },
+      "net_received_adm": {
+        "name": "{interface} 수신(ADM 카운터)"
+      },
+      "diskio_read": {
+        "name": "{device} 읽기"
+      },
+      "diskio_written": {
+        "name": "{device} 쓰기"
+      },
+      "volume_usage": {
+        "name": "사용률"
+      },
+      "volume_free": {
+        "name": "여유 공간"
+      },
+      "volume_used": {
+        "name": "사용 공간"
+      },
+      "volume_total": {
+        "name": "전체 크기"
+      },
+      "volume_status": {
+        "name": "상태"
+      },
+      "volume_raid_level": {
+        "name": "RAID 레벨"
+      },
+      "volume_filesystem": {
+        "name": "파일 시스템"
+      },
+      "if_received": {
+        "name": "수신"
+      },
+      "if_sent": {
+        "name": "송신"
+      },
+      "if_receive_rate": {
+        "name": "수신 속도"
+      },
+      "if_transmit_rate": {
+        "name": "송신 속도"
+      },
+      "if_link": {
+        "name": "링크"
+      },
+      "if_speed": {
+        "name": "속도"
+      },
+      "disk_temperature": {
+        "name": "온도"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T. 상태"
+      },
+      "disk_status": {
+        "name": "상태"
+      },
+      "disk_size": {
+        "name": "크기"
+      },
+      "ups_status": {
+        "name": "상태"
+      },
+      "ups_battery_charge": {
+        "name": "배터리 충전량"
+      },
+      "ups_battery_low": {
+        "name": "배터리 부족 기준"
+      },
+      "ups_battery_runtime": {
+        "name": "배터리 사용 가능 시간"
+      },
+      "ups_input_voltage": {
+        "name": "입력 전압"
+      },
+      "ups_input_sensitivity": {
+        "name": "입력 감도"
+      },
+      "ups_vendor_id": {
+        "name": "제조사 ID"
+      },
+      "ups_product_id": {
+        "name": "제품 ID"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM 펌웨어"
+      }
+    }
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ASUSTOR NAS (SNMP)",
+        "description": "Schakel eerst SNMP in via ADM (Services > SNMP). Kies SNMP v3 als u daar gebruikers hebt aangemaakt.",
+        "data": {
+          "host": "Host",
+          "name": "Naam",
+          "port": "Poort",
+          "snmp_version": "SNMP-versie"
+        }
+      },
+      "reconfigure": {
+        "title": "ASUSTOR NAS opnieuw configureren",
+        "description": "Wijzig het NAS-adres of de SNMP-versie zonder de integratie te verwijderen.",
+        "data": {
+          "host": "Host",
+          "port": "Poort",
+          "snmp_version": "SNMP-versie"
+        }
+      },
+      "v2c": {
+        "title": "SNMP v2c",
+        "description": "Voer de community in die in ADM is ingesteld (Services > SNMP).",
+        "data": {
+          "community": "SNMP-community"
+        }
+      },
+      "v3": {
+        "title": "SNMP v3",
+        "description": "Voer de in ADM ingestelde SNMP v3-gebruiker in. Wachtwoordzinnen hebben minimaal 8 tekens nodig.",
+        "data": {
+          "username": "Gebruikersnaam",
+          "auth_protocol": "Authenticatieprotocol",
+          "auth_key": "Authenticatiewachtwoordzin",
+          "priv_protocol": "Versleutelingsprotocol",
+          "priv_key": "Versleutelingswachtwoordzin"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan de NAS niet bereiken via SNMP. Controleer host, poort en inloggegevens en of SNMP is ingeschakeld.",
+      "invalid_auth": "De NAS heeft de SNMP v3-inloggegevens geweigerd.",
+      "key_too_short": "Wachtwoordzinnen moeten minimaal 8 tekens lang zijn.",
+      "priv_requires_auth": "Versleuteling vereist een authenticatieprotocol.",
+      "already_configured": "Een andere invoer gebruikt deze host al."
+    },
+    "abort": {
+      "already_configured": "Deze NAS is al geconfigureerd.",
+      "reconfigure_successful": "NAS-instellingen bijgewerkt.",
+      "reauth_successful": "Inloggegevens bijgewerkt."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ASUSTOR NAS-opties",
+        "description": "Ophaalinterval en te volgen netwerkinterfaces. Opslaan laadt de integratie opnieuw.",
+        "data": {
+          "scan_interval": "Ophaalinterval (seconden)",
+          "interfaces": "Te volgen netwerkinterfaces"
+        }
+      }
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": {
+        "2c": "v2c (community)",
+        "3": "v3 (gebruiker, authenticatie, versleuteling)"
+      }
+    },
+    "auth_protocol": {
+      "options": {
+        "none": "Geen",
+        "md5": "MD5",
+        "sha": "SHA",
+        "sha224": "SHA-224",
+        "sha256": "SHA-256",
+        "sha384": "SHA-384",
+        "sha512": "SHA-512"
+      }
+    },
+    "priv_protocol": {
+      "options": {
+        "none": "Geen",
+        "des": "DES",
+        "3des": "3DES",
+        "aes": "AES-128",
+        "aes192": "AES-192",
+        "aes256": "AES-256"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Probleem"
+      },
+      "connected": {
+        "name": "Verbonden"
+      },
+      "on_battery": {
+        "name": "Op batterij"
+      },
+      "low_battery": {
+        "name": "Batterij bijna leeg"
+      }
+    },
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU-gebruik"
+      },
+      "memory_usage": {
+        "name": "Geheugengebruik"
+      },
+      "memory_total": {
+        "name": "Totaal geheugen"
+      },
+      "memory_available": {
+        "name": "Beschikbaar geheugen"
+      },
+      "swap_usage": {
+        "name": "Swapgebruik"
+      },
+      "load_1": {
+        "name": "Belasting (1 min)"
+      },
+      "load_5": {
+        "name": "Belasting (5 min)"
+      },
+      "load_15": {
+        "name": "Belasting (15 min)"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "timezone": {
+        "name": "Tijdzone"
+      },
+      "adm_uptime": {
+        "name": "ADM-uptime"
+      },
+      "system_time": {
+        "name": "Systeemtijd"
+      },
+      "cpu_model": {
+        "name": "CPU-model"
+      },
+      "cpu_core_usage": {
+        "name": "Gebruik CPU-kern {core}"
+      },
+      "fan_speed": {
+        "name": "Ventilatorsnelheid"
+      },
+      "fan_speed_n": {
+        "name": "Ventilatorsnelheid {fan}"
+      },
+      "cpu_temperature": {
+        "name": "CPU-temperatuur"
+      },
+      "system_temperature": {
+        "name": "Systeemtemperatuur"
+      },
+      "cpu_temperature_n": {
+        "name": "CPU-temperatuur {sensor}"
+      },
+      "system_temperature_n": {
+        "name": "Systeemtemperatuur {sensor}"
+      },
+      "net_ipv4": {
+        "name": "{interface} IPv4-adres"
+      },
+      "net_ipv6": {
+        "name": "{interface} IPv6-adres"
+      },
+      "net_mac": {
+        "name": "{interface} MAC-adres"
+      },
+      "net_sent_adm": {
+        "name": "{interface} verzonden (ADM-teller)"
+      },
+      "net_received_adm": {
+        "name": "{interface} ontvangen (ADM-teller)"
+      },
+      "diskio_read": {
+        "name": "{device} gelezen"
+      },
+      "diskio_written": {
+        "name": "{device} geschreven"
+      },
+      "volume_usage": {
+        "name": "Gebruik"
+      },
+      "volume_free": {
+        "name": "Vrije ruimte"
+      },
+      "volume_used": {
+        "name": "Gebruikte ruimte"
+      },
+      "volume_total": {
+        "name": "Totale grootte"
+      },
+      "volume_status": {
+        "name": "Status"
+      },
+      "volume_raid_level": {
+        "name": "RAID-niveau"
+      },
+      "volume_filesystem": {
+        "name": "Bestandssysteem"
+      },
+      "if_received": {
+        "name": "Ontvangen"
+      },
+      "if_sent": {
+        "name": "Verzonden"
+      },
+      "if_receive_rate": {
+        "name": "Ontvangstsnelheid"
+      },
+      "if_transmit_rate": {
+        "name": "Verzendsnelheid"
+      },
+      "if_link": {
+        "name": "Verbinding"
+      },
+      "if_speed": {
+        "name": "Snelheid"
+      },
+      "disk_temperature": {
+        "name": "Temperatuur"
+      },
+      "disk_health": {
+        "name": "S.M.A.R.T.-gezondheid"
+      },
+      "disk_status": {
+        "name": "Status"
+      },
+      "disk_size": {
+        "name": "Grootte"
+      },
+      "ups_status": {
+        "name": "Status"
+      },
+      "ups_battery_charge": {
+        "name": "Batterijlading"
+      },
+      "ups_battery_low": {
+        "name": "Drempel batterij bijna leeg"
+      },
+      "ups_battery_runtime": {
+        "name": "Resterende looptijd"
+      },
+      "ups_input_voltage": {
+        "name": "Ingangsspanning"
+      },
+      "ups_input_sensitivity": {
+        "name": "Ingangsgevoeligheid"
+      },
+      "ups_vendor_id": {
+        "name": "Fabrikant-ID"
+      },
+      "ups_product_id": {
+        "name": "Product-ID"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM-firmware"
+      }
+    }
+  }
+}
