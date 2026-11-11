@@ -10,7 +10,7 @@ from .const import CONF_COMMUNITY
 from .coordinator import AsustorCoordinator
 from .snmp import AsustorSnmp, create_engine
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.UPDATE]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

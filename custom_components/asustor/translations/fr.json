@@ -48,9 +48,6 @@
       "swap_usage": {
         "name": "Utilisation du swap"
       },
-      "update_status": {
-        "name": "Mise à jour ADM"
-      },
       "timezone": {
         "name": "Fuseau horaire"
       },
@@ -62,6 +59,11 @@
       },
       "cpu_model": {
         "name": "Modèle de CPU"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "Firmware ADM"
       }
     }
   }

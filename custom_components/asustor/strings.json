@@ -48,9 +48,6 @@
       "swap_usage": {
         "name": "Swap usage"
       },
-      "update_status": {
-        "name": "ADM update"
-      },
       "timezone": {
         "name": "Time zone"
       },
@@ -62,6 +59,11 @@
       },
       "cpu_model": {
         "name": "CPU model"
+      }
+    },
+    "update": {
+      "adm": {
+        "name": "ADM firmware"
       }
     }
   }

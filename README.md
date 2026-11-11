@@ -21,6 +21,22 @@ Intégration personnalisée pour surveiller un NAS **ASUSTOR** (ADM) depuis Home
 | Onduleur (UPS) | État, charge batterie, autonomie, seuil de batterie faible, tension d'entrée, sensibilité — uniquement si un onduleur est connecté |
 | Appareil | Modèle, version ADM, version BIOS, numéro de série |
 
+### Appareils
+
+Les entités sont rangées par appareil dans Home Assistant :
+
+- **NAS** : système, CPU, mémoire, températures, ventilateurs, réseau (adresses) et l'entité de **mise à jour du firmware ADM**
+- **Un appareil par disque** (`Disk0`, `Disk1`…) : température, santé S.M.A.R.T., état, taille
+- **Un appareil par volume** (`Volume 1`…) : utilisation, espace, état, RAID, système de fichiers
+- **Un appareil par interface réseau** (`eth0`, `eth1`, `bond0`…) : débit cumulé, lien, vitesse
+- **Un appareil UPS**, si un onduleur est connecté
+
+Chaque appareil enfant est rattaché au NAS (« via le NAS »).
+
+### Mise à jour ADM
+
+L'entité `update` indique si une nouvelle version d'ADM est disponible (information fournie par le NAS en SNMP). L'installation reste à faire depuis ADM : l'intégration est en lecture seule.
+
 Certains capteurs de diagnostic (adresse MAC, fuseau horaire, taille des disques, etc.) sont désactivés par défaut : activez-les depuis la fiche de l'entité.
 
 Les volumes, disques et interfaces sont détectés automatiquement.
@@ -75,4 +91,4 @@ Les issues et pull requests sont les bienvenues, notamment des sorties `snmpwalk
 
 ## Licence
 
-Version 0.1.0-beta.2 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.3 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
