@@ -185,6 +185,6 @@ Ils couvrent la lecture SNMP (v2c et v3), les appareils et entités, les capteur
 
 ## Licence
 
-Version 0.1.0-beta.8 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.9 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
 
 > ASUSTOR et son logo sont des marques de leur propriétaire (ASUSTOR Inc.). Ce projet est indépendant et n'est ni affilié ni approuvé par ASUSTOR ; le logo n'est utilisé que pour identifier les NAS compatibles.
