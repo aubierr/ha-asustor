@@ -75,4 +75,4 @@ Les issues et pull requests sont les bienvenues, notamment des sorties `snmpwalk
 
 ## Licence
 
-Version 0.1.0 — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.1 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
