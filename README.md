@@ -1,4 +1,11 @@
-﻿# ASUSTOR NAS pour Home Assistant
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/asustor-logo-white.svg">
+    <img src="assets/asustor-logo-dark.svg" alt="ASUSTOR" width="260">
+  </picture>
+</p>
+
+# ASUSTOR NAS pour Home Assistant
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 [![Version](https://img.shields.io/github/v/release/aubierr/ha-asustor)](https://github.com/aubierr/ha-asustor/releases)
@@ -92,3 +99,5 @@ Les issues et pull requests sont les bienvenues, notamment des sorties `snmpwalk
 ## Licence
 
 Version 0.1.0-beta.3 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+
+> ASUSTOR et son logo sont des marques de leur propriétaire (ASUSTOR Inc.). Ce projet est indépendant et n'est ni affilié ni approuvé par ASUSTOR ; le logo n'est utilisé que pour identifier les NAS compatibles.
