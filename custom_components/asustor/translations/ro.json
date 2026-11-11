@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Introduceți utilizatorul și parola SNMP v3 setate în ADM (Servicii > SNMP). Lăsați protocoalele pe Automat: sunt detectate pentru dvs.",
+        "description": "Introduceți utilizatorul și parola SNMP v3 setate în ADM (Servicii > SNMP). Protocoalele sunt detectate automat.",
         "data": {
           "username": "Nume utilizator",
-          "auth_protocol": "Protocol de autentificare",
-          "auth_key": "Parolă",
-          "priv_protocol": "Protocol de criptare",
-          "priv_key": "Parolă de criptare (goală = aceeași ca parola)"
+          "auth_key": "Parolă"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Opțiuni avansate",
+            "description": "Modificați doar dacă detectarea automată a protocoalelor nu funcționează.",
+            "data": {
+              "auth_protocol": "Protocol de autentificare",
+              "priv_protocol": "Protocol de criptare",
+              "priv_key": "Parolă de criptare (goală = aceeași ca parola)"
+            }
+          }
         }
       }
     },

@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Inserisci l'utente e la password SNMP v3 impostati in ADM (Servizi > SNMP). Lascia i protocolli su Automatico: vengono rilevati per te.",
+        "description": "Inserisci l'utente e la password SNMP v3 impostati in ADM (Servizi > SNMP). I protocolli vengono rilevati automaticamente.",
         "data": {
           "username": "Nome utente",
-          "auth_protocol": "Protocollo di autenticazione",
-          "auth_key": "Password",
-          "priv_protocol": "Protocollo di crittografia",
-          "priv_key": "Password di crittografia (vuota = uguale alla password)"
+          "auth_key": "Password"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Opzioni avanzate",
+            "description": "Modificale solo se il rilevamento automatico dei protocolli non funziona.",
+            "data": {
+              "auth_protocol": "Protocollo di autenticazione",
+              "priv_protocol": "Protocollo di crittografia",
+              "priv_key": "Password di crittografia (vuota = uguale alla password)"
+            }
+          }
         }
       }
     },

@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Informe o usuário e a senha SNMP v3 definidos no ADM (Serviços > SNMP). Deixe os protocolos em Automático: eles são detectados para você.",
+        "description": "Informe o usuário e a senha SNMP v3 definidos no ADM (Serviços > SNMP). Os protocolos são detectados automaticamente.",
         "data": {
           "username": "Nome de usuário",
-          "auth_protocol": "Protocolo de autenticação",
-          "auth_key": "Senha",
-          "priv_protocol": "Protocolo de criptografia",
-          "priv_key": "Senha de criptografia (vazia = igual à senha)"
+          "auth_key": "Senha"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Opções avançadas",
+            "description": "Altere apenas se a detecção automática dos protocolos não funcionar.",
+            "data": {
+              "auth_protocol": "Protocolo de autenticação",
+              "priv_protocol": "Protocolo de criptografia",
+              "priv_key": "Senha de criptografia (vazia = igual à senha)"
+            }
+          }
         }
       }
     },

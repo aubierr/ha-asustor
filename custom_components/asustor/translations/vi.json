@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Nhập người dùng và mật khẩu SNMP v3 đã đặt trong ADM (Dịch vụ > SNMP). Hãy để các giao thức ở chế độ Tự động: chúng sẽ được phát hiện cho bạn.",
+        "description": "Nhập người dùng và mật khẩu SNMP v3 đã đặt trong ADM (Dịch vụ > SNMP). Các giao thức được phát hiện tự động.",
         "data": {
           "username": "Tên người dùng",
-          "auth_protocol": "Giao thức xác thực",
-          "auth_key": "Mật khẩu",
-          "priv_protocol": "Giao thức mã hóa",
-          "priv_key": "Mật khẩu mã hóa (để trống = giống mật khẩu)"
+          "auth_key": "Mật khẩu"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Tùy chọn nâng cao",
+            "description": "Chỉ thay đổi khi tính năng tự động phát hiện giao thức không hoạt động.",
+            "data": {
+              "auth_protocol": "Giao thức xác thực",
+              "priv_protocol": "Giao thức mã hóa",
+              "priv_key": "Mật khẩu mã hóa (để trống = giống mật khẩu)"
+            }
+          }
         }
       }
     },

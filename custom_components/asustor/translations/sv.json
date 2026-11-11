@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Ange SNMP v3-användaren och lösenordet som är inställda i ADM (Tjänster > SNMP). Låt protokollen stå på Automatiskt: de identifieras åt dig.",
+        "description": "Ange SNMP v3-användaren och lösenordet som är inställda i ADM (Tjänster > SNMP). Protokollen identifieras automatiskt.",
         "data": {
           "username": "Användarnamn",
-          "auth_protocol": "Autentiseringsprotokoll",
-          "auth_key": "Lösenord",
-          "priv_protocol": "Krypteringsprotokoll",
-          "priv_key": "Krypteringslösenord (tomt = samma som lösenordet)"
+          "auth_key": "Lösenord"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Avancerade alternativ",
+            "description": "Ändra bara om den automatiska identifieringen av protokollen inte fungerar.",
+            "data": {
+              "auth_protocol": "Autentiseringsprotokoll",
+              "priv_protocol": "Krypteringsprotokoll",
+              "priv_key": "Krypteringslösenord (tomt = samma som lösenordet)"
+            }
+          }
         }
       }
     },

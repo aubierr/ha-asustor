@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Introduza o utilizador e a palavra-passe SNMP v3 definidos no ADM (Serviços > SNMP). Deixe os protocolos em Automático: são detetados por si.",
+        "description": "Introduza o utilizador e a palavra-passe SNMP v3 definidos no ADM (Serviços > SNMP). Os protocolos são detetados automaticamente.",
         "data": {
           "username": "Nome de utilizador",
-          "auth_protocol": "Protocolo de autenticação",
-          "auth_key": "Palavra-passe",
-          "priv_protocol": "Protocolo de encriptação",
-          "priv_key": "Palavra-passe de encriptação (vazia = igual à palavra-passe)"
+          "auth_key": "Palavra-passe"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Opções avançadas",
+            "description": "Altere apenas se a deteção automática dos protocolos não funcionar.",
+            "data": {
+              "auth_protocol": "Protocolo de autenticação",
+              "priv_protocol": "Protocolo de encriptação",
+              "priv_key": "Palavra-passe de encriptação (vazia = igual à palavra-passe)"
+            }
+          }
         }
       }
     },

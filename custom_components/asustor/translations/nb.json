@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Skriv inn SNMP v3-brukeren og passordet som er satt i ADM (Tjenester > SNMP). La protokollene stå på Automatisk: de oppdages for deg.",
+        "description": "Skriv inn SNMP v3-brukeren og passordet som er satt i ADM (Tjenester > SNMP). Protokollene oppdages automatisk.",
         "data": {
           "username": "Brukernavn",
-          "auth_protocol": "Autentiseringsprotokoll",
-          "auth_key": "Passord",
-          "priv_protocol": "Krypteringsprotokoll",
-          "priv_key": "Krypteringspassord (tomt = samme som passordet)"
+          "auth_key": "Passord"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Avanserte alternativer",
+            "description": "Endre bare hvis den automatiske oppdagelsen av protokollene ikke fungerer.",
+            "data": {
+              "auth_protocol": "Autentiseringsprotokoll",
+              "priv_protocol": "Krypteringsprotokoll",
+              "priv_key": "Krypteringspassord (tomt = samme som passordet)"
+            }
+          }
         }
       }
     },

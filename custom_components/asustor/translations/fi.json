@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Anna ADM:ssä (Palvelut > SNMP) asetettu SNMP v3 -käyttäjä ja salasana. Jätä protokollat Automaattinen-tilaan: ne tunnistetaan puolestasi.",
+        "description": "Anna ADM:ssä (Palvelut > SNMP) asetettu SNMP v3 -käyttäjä ja salasana. Protokollat tunnistetaan automaattisesti.",
         "data": {
           "username": "Käyttäjänimi",
-          "auth_protocol": "Todennusprotokolla",
-          "auth_key": "Salasana",
-          "priv_protocol": "Salausprotokolla",
-          "priv_key": "Salauksen salasana (tyhjä = sama kuin salasana)"
+          "auth_key": "Salasana"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Lisäasetukset",
+            "description": "Muuta vain, jos protokollien automaattinen tunnistus ei toimi.",
+            "data": {
+              "auth_protocol": "Todennusprotokolla",
+              "priv_protocol": "Salausprotokolla",
+              "priv_key": "Salauksen salasana (tyhjä = sama kuin salasana)"
+            }
+          }
         }
       }
     },

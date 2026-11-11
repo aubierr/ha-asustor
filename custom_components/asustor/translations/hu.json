@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Adja meg az ADM-ben (Szolgáltatások > SNMP) beállított SNMP v3 felhasználót és jelszót. Hagyja a protokollokat Automatikus értéken: felismerjük őket.",
+        "description": "Adja meg az ADM-ben (Szolgáltatások > SNMP) beállított SNMP v3 felhasználót és jelszót. A protokollokat automatikusan felismerjük.",
         "data": {
           "username": "Felhasználónév",
-          "auth_protocol": "Hitelesítési protokoll",
-          "auth_key": "Jelszó",
-          "priv_protocol": "Titkosítási protokoll",
-          "priv_key": "Titkosítási jelszó (üres = megegyezik a jelszóval)"
+          "auth_key": "Jelszó"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Speciális beállítások",
+            "description": "Csak akkor módosítsa, ha a protokollok automatikus felismerése nem működik.",
+            "data": {
+              "auth_protocol": "Hitelesítési protokoll",
+              "priv_protocol": "Titkosítási protokoll",
+              "priv_key": "Titkosítási jelszó (üres = megegyezik a jelszóval)"
+            }
+          }
         }
       }
     },

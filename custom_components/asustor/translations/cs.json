@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Zadejte uživatele a heslo SNMP v3 nastavené v ADM (Služby > SNMP). Protokoly nechte na Automaticky: zjistí se za vás.",
+        "description": "Zadejte uživatele a heslo SNMP v3 nastavené v ADM (Služby > SNMP). Protokoly se zjišťují automaticky.",
         "data": {
           "username": "Uživatelské jméno",
-          "auth_protocol": "Ověřovací protokol",
-          "auth_key": "Heslo",
-          "priv_protocol": "Šifrovací protokol",
-          "priv_key": "Šifrovací heslo (prázdné = stejné jako heslo)"
+          "auth_key": "Heslo"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Pokročilé možnosti",
+            "description": "Měňte pouze tehdy, pokud automatické zjištění protokolů nefunguje.",
+            "data": {
+              "auth_protocol": "Ověřovací protokol",
+              "priv_protocol": "Šifrovací protokol",
+              "priv_key": "Šifrovací heslo (prázdné = stejné jako heslo)"
+            }
+          }
         }
       }
     },

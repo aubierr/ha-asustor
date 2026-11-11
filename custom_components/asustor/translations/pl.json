@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Podaj użytkownika i hasło SNMP v3 ustawione w ADM (Usługi > SNMP). Pozostaw protokoły na Automatycznie: zostaną wykryte za Ciebie.",
+        "description": "Podaj użytkownika i hasło SNMP v3 ustawione w ADM (Usługi > SNMP). Protokoły są wykrywane automatycznie.",
         "data": {
           "username": "Nazwa użytkownika",
-          "auth_protocol": "Protokół uwierzytelniania",
-          "auth_key": "Hasło",
-          "priv_protocol": "Protokół szyfrowania",
-          "priv_key": "Hasło szyfrowania (puste = takie samo jak hasło)"
+          "auth_key": "Hasło"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Opcje zaawansowane",
+            "description": "Zmieniaj tylko wtedy, gdy automatyczne wykrywanie protokołów nie działa.",
+            "data": {
+              "auth_protocol": "Protokół uwierzytelniania",
+              "priv_protocol": "Protokół szyfrowania",
+              "priv_key": "Hasło szyfrowania (puste = takie samo jak hasło)"
+            }
+          }
         }
       }
     },

@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "ADM（サービス > SNMP）で設定した SNMP v3 のユーザーとパスワードを入力してください。プロトコルは「自動」のままで構いません（自動検出されます）。",
+        "description": "ADM（サービス > SNMP）で設定した SNMP v3 のユーザーとパスワードを入力してください。プロトコルは自動で検出されます。",
         "data": {
           "username": "ユーザー名",
-          "auth_protocol": "認証プロトコル",
-          "auth_key": "パスワード",
-          "priv_protocol": "暗号化プロトコル",
-          "priv_key": "暗号化パスワード（空欄の場合は上のパスワードを使用）"
+          "auth_key": "パスワード"
+        },
+        "sections": {
+          "advanced": {
+            "name": "詳細オプション",
+            "description": "プロトコルの自動検出がうまくいかない場合にのみ変更してください。",
+            "data": {
+              "auth_protocol": "認証プロトコル",
+              "priv_protocol": "暗号化プロトコル",
+              "priv_key": "暗号化パスワード（空欄の場合は上のパスワードを使用）"
+            }
+          }
         }
       }
     },

@@ -16,6 +16,7 @@ from homeassistant.config_entries import (
 )
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.data_entry_flow import section
 from homeassistant.helpers.selector import (
     NumberSelector,
     NumberSelectorConfig,
@@ -60,6 +61,7 @@ from .snmp import (
     to_str,
 )
 
+ADVANCED = "advanced"  # collapsed section: protocols + encryption password
 MIN_KEY_LENGTH = 8  # RFC 3414: authentication / privacy passphrases are >= 8 characters
 
 
@@ -236,13 +238,15 @@ class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
 
     # --- step 2b: SNMP v3 user ---------------------------------------------------------
     async def async_step_v3(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        """User name + password (what ADM asks for); protocols are an advanced, collapsed option."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            auth = user_input[CONF_AUTH_PROTOCOL]
-            priv = user_input[CONF_PRIV_PROTOCOL]
+            advanced = user_input.get(ADVANCED) or {}
+            auth = advanced.get(CONF_AUTH_PROTOCOL, AUTO)
+            priv = advanced.get(CONF_PRIV_PROTOCOL, AUTO)
             password = user_input.get(CONF_AUTH_KEY) or ""
             # ADM has a single password field: encryption reuses it unless another one is given.
-            priv_key = user_input.get(CONF_PRIV_KEY) or password
+            priv_key = advanced.get(CONF_PRIV_KEY) or password
             if auth == "none" and priv not in ("none", AUTO):
                 errors["base"] = "priv_requires_auth"
             elif (auth != "none" and len(password) < MIN_KEY_LENGTH) or (
@@ -269,18 +273,27 @@ class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
                     self._conn = conn
                     return self._async_finish(name)
 
-        d = user_input or self._conn
+        d = self._conn if user_input is None else {
+            **user_input, **(user_input.get(ADVANCED) or {})
+        }
         schema = vol.Schema(
             {
                 vol.Required(CONF_USERNAME, default=d.get(CONF_USERNAME, "")): str,
                 vol.Required(CONF_AUTH_KEY, default=d.get(CONF_AUTH_KEY, "")): _secret(),
-                vol.Required(CONF_AUTH_PROTOCOL, default=d.get(CONF_AUTH_PROTOCOL, AUTO)): _protocol_selector(
-                    [AUTO, *AUTH_PROTOCOLS], "auth_protocol"
+                vol.Required(ADVANCED): section(
+                    vol.Schema(
+                        {
+                            vol.Required(
+                                CONF_AUTH_PROTOCOL, default=d.get(CONF_AUTH_PROTOCOL, AUTO)
+                            ): _protocol_selector([AUTO, *AUTH_PROTOCOLS], "auth_protocol"),
+                            vol.Required(
+                                CONF_PRIV_PROTOCOL, default=d.get(CONF_PRIV_PROTOCOL, AUTO)
+                            ): _protocol_selector([AUTO, *PRIV_PROTOCOLS], "priv_protocol"),
+                            vol.Optional(CONF_PRIV_KEY, default=d.get(CONF_PRIV_KEY, "")): _secret(),
+                        }
+                    ),
+                    {"collapsed": True},
                 ),
-                vol.Required(CONF_PRIV_PROTOCOL, default=d.get(CONF_PRIV_PROTOCOL, AUTO)): _protocol_selector(
-                    [AUTO, *PRIV_PROTOCOLS], "priv_protocol"
-                ),
-                vol.Optional(CONF_PRIV_KEY, default=d.get(CONF_PRIV_KEY, "")): _secret(),
             }
         )
         return self.async_show_form(step_id="v3", data_schema=schema, errors=errors)

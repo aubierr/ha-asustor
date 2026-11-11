@@ -10,6 +10,24 @@ from custom_components.asustor.const import DOMAIN
 
 from .conftest import HOST, V2C_DATA, V3_DATA
 
+
+_ADVANCED_KEYS = ("auth_protocol", "priv_protocol", "priv_key")
+
+
+def _nest(data: dict) -> dict:
+    """What the frontend sends: protocols and encryption password live in the collapsed section."""
+    if not any(k in data for k in _ADVANCED_KEYS):
+        return data
+    top = {k: v for k, v in data.items() if k not in _ADVANCED_KEYS}
+    adv = {k: data[k] for k in _ADVANCED_KEYS if k in data}
+    adv.setdefault("auth_protocol", "auto")
+    adv.setdefault("priv_protocol", "auto")
+    return {**top, "advanced": adv}
+
+
+async def _configure(hass, flow_id, data):
+    return await hass.config_entries.flow.async_configure(flow_id, _nest(data))
+
 V3_INPUT = {"username": "ha", "auth_protocol": "sha", "auth_key": "authpass12",
             "priv_protocol": "aes", "priv_key": "privpass12"}
 
@@ -17,14 +35,14 @@ V3_INPUT = {"username": "ha", "auth_protocol": "sha", "auth_key": "authpass12",
 async def _start(hass, version="2c", host=HOST):
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": "user"})
     assert result["type"] is FlowResultType.FORM and result["step_id"] == "user"
-    return await hass.config_entries.flow.async_configure(
+    return await _configure(hass, 
         result["flow_id"], {"host": host, "port": 161, "snmp_version": version})
 
 
 async def test_user_flow_v2c(hass, fake_snmp):
     result = await _start(hass, "2c")
     assert result["step_id"] == "v2c"
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {"community": "public"})
+    result = await _configure(hass, result["flow_id"], {"community": "public"})
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["title"] == "NAS-ASUSTOR"  # taken from sysName
     assert result["data"] == V2C_DATA
@@ -34,7 +52,7 @@ async def test_user_flow_v2c(hass, fake_snmp):
 async def test_user_flow_v3(hass, fake_snmp):
     result = await _start(hass, "3")
     assert result["step_id"] == "v3"
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], V3_INPUT)
+    result = await _configure(hass, result["flow_id"], V3_INPUT)
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["data"] == V3_DATA
     assert fake_snmp.auth.__class__.__name__ == "UsmUserData"
@@ -44,10 +62,10 @@ async def test_user_flow_v3(hass, fake_snmp):
 async def test_v2c_cannot_connect_then_recovers(hass, fake_snmp):
     fake_snmp.fail()
     result = await _start(hass, "2c")
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {"community": "public"})
+    result = await _configure(hass, result["flow_id"], {"community": "public"})
     assert result["type"] is FlowResultType.FORM and result["errors"] == {"base": "cannot_connect"}
     fake_snmp.error = None
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {"community": "public"})
+    result = await _configure(hass, result["flow_id"], {"community": "public"})
     assert result["type"] is FlowResultType.CREATE_ENTRY
     await hass.async_block_till_done()
 
@@ -56,25 +74,25 @@ async def test_v3_validation_errors(hass, fake_snmp):
     result = await _start(hass, "3")
     flow_id = result["flow_id"]
 
-    short = await hass.config_entries.flow.async_configure(flow_id, {**V3_INPUT, "auth_key": "short"})
+    short = await _configure(hass, flow_id, {**V3_INPUT, "auth_key": "short"})
     assert short["errors"] == {"base": "key_too_short"}
 
-    no_auth = await hass.config_entries.flow.async_configure(
+    no_auth = await _configure(hass, 
         flow_id, {**V3_INPUT, "auth_protocol": "none", "auth_key": ""})
     assert no_auth["errors"] == {"base": "priv_requires_auth"}
 
     fake_snmp.fail(auth=True)
-    rejected = await hass.config_entries.flow.async_configure(flow_id, V3_INPUT)
+    rejected = await _configure(hass, flow_id, V3_INPUT)
     assert rejected["errors"] == {"base": "invalid_auth"}
 
     fake_snmp.fail()
-    down = await hass.config_entries.flow.async_configure(flow_id, V3_INPUT)
+    down = await _configure(hass, flow_id, V3_INPUT)
     assert down["errors"] == {"base": "cannot_connect"}
 
 
 async def test_v3_without_encryption_is_accepted(hass, fake_snmp):
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {**V3_INPUT, "priv_protocol": "none", "priv_key": ""})
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["data"]["priv_protocol"] == "none" and result["data"]["priv_key"] == ""
@@ -84,7 +102,7 @@ async def test_v3_without_encryption_is_accepted(hass, fake_snmp):
 async def test_duplicate_host_aborts(hass, make_entry):
     await make_entry()
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": "user"})
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {"host": HOST, "port": 161, "snmp_version": "2c"})
     assert result["type"] is FlowResultType.ABORT and result["reason"] == "already_configured"
 
@@ -93,10 +111,10 @@ async def test_reconfigure_switches_v2c_to_v3(hass, make_entry):
     entry = await make_entry()
     result = await entry.start_reconfigure_flow(hass)
     assert result["step_id"] == "reconfigure"
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {"host": HOST, "port": 161, "snmp_version": "3"})
     assert result["step_id"] == "v3"
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], V3_INPUT)
+    result = await _configure(hass, result["flow_id"], V3_INPUT)
     assert result["type"] is FlowResultType.ABORT and result["reason"] == "reconfigure_successful"
     await hass.async_block_till_done()
     assert entry.data == V3_DATA and "community" not in entry.data
@@ -107,7 +125,7 @@ async def test_reconfigure_rejects_a_host_used_by_another_entry(hass, make_entry
     other = await make_entry({**V2C_DATA, "host": "192.0.2.99"})
     await make_entry()
     result = await other.start_reconfigure_flow(hass)
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {"host": HOST, "port": 161, "snmp_version": "2c"})
     assert result["type"] is FlowResultType.FORM and result["errors"] == {"base": "already_configured"}
 
@@ -119,7 +137,7 @@ async def test_reauth_updates_v3_credentials(hass, make_entry, fake_snmp):
     fake_snmp.error = None
     result = await entry.start_reauth_flow(hass)
     assert result["step_id"] == "v3"
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {**V3_INPUT, "auth_key": "newpass1234", "priv_key": "newpriv1234"})
     assert result["type"] is FlowResultType.ABORT and result["reason"] == "reauth_successful"
     await hass.async_block_till_done()
@@ -150,7 +168,11 @@ ADM_INPUT = {"username": "snmp", "auth_key": "snmp-pass-1", "auth_protocol": "au
 
 async def test_v3_form_defaults_to_automatic_protocols(hass, fake_snmp):
     result = await _start(hass, "3")
-    defaults = {str(k): k.default() for k in result["data_schema"].schema if k.default is not None}
+    fields = {str(k): v for k, v in result["data_schema"].schema.items()}
+    assert set(fields) == {"username", "auth_key", "advanced"}  # protocols are NOT in the main form
+    advanced = fields["advanced"]
+    assert advanced.options["collapsed"] is True
+    defaults = {str(k): k.default() for k in advanced.schema.schema if k.default is not None}
     assert defaults["auth_protocol"] == "auto" and defaults["priv_protocol"] == "auto"
 
 
@@ -160,7 +182,7 @@ async def test_v3_form_defaults_to_automatic_protocols(hass, fake_snmp):
 async def test_v3_protocols_are_detected(hass, fake_snmp, auth, priv):
     fake_snmp.v3_accepts = (auth, priv)
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], ADM_INPUT)
+    result = await _configure(hass, result["flow_id"], ADM_INPUT)
     assert result["type"] is FlowResultType.CREATE_ENTRY, result.get("errors")
     data = result["data"]
     assert (data["auth_protocol"], data["priv_protocol"]) == (auth, priv)
@@ -173,7 +195,7 @@ async def test_v3_protocols_are_detected(hass, fake_snmp, auth, priv):
 
 async def test_explicit_protocols_use_normal_timeouts(hass, fake_snmp):
     result = await _start(hass, "3")
-    await hass.config_entries.flow.async_configure(result["flow_id"], V3_INPUT)
+    await _configure(hass, result["flow_id"], V3_INPUT)
     assert fake_snmp.timeouts[0] == 5 and 2.5 not in fake_snmp.timeouts  # a single candidate: no probing
     await hass.async_block_till_done()
 
@@ -181,14 +203,14 @@ async def test_explicit_protocols_use_normal_timeouts(hass, fake_snmp):
 async def test_auto_with_a_wrong_password_is_invalid_auth(hass, fake_snmp):
     fake_snmp.fail(auth=True)
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], ADM_INPUT)
+    result = await _configure(hass, result["flow_id"], ADM_INPUT)
     assert result["type"] is FlowResultType.FORM and result["errors"] == {"base": "invalid_auth"}
 
 
 async def test_auto_against_a_silent_nas_is_cannot_connect(hass, fake_snmp):
     fake_snmp.fail()  # every candidate times out
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], ADM_INPUT)
+    result = await _configure(hass, result["flow_id"], ADM_INPUT)
     assert result["errors"] == {"base": "cannot_connect"}
     assert len(fake_snmp.timeouts) == 6  # all candidates tried, then reported as unreachable
 
@@ -196,7 +218,7 @@ async def test_auto_against_a_silent_nas_is_cannot_connect(hass, fake_snmp):
 async def test_explicit_protocols_that_the_nas_rejects(hass, fake_snmp):
     fake_snmp.v3_accepts = ("sha", "aes")
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {**ADM_INPUT, "auth_protocol": "md5", "priv_protocol": "des"})
     assert result["errors"] == {"base": "invalid_auth"}
 
@@ -204,7 +226,7 @@ async def test_explicit_protocols_that_the_nas_rejects(hass, fake_snmp):
 async def test_encryption_password_can_differ(hass, fake_snmp):
     fake_snmp.v3_accepts = ("sha", "aes")
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(
+    result = await _configure(hass, 
         result["flow_id"], {**ADM_INPUT, "priv_key": "another-secret"})
     assert result["data"]["priv_key"] == "another-secret"
     await hass.async_block_till_done()
@@ -212,6 +234,46 @@ async def test_encryption_password_can_differ(hass, fake_snmp):
 
 async def test_short_password_is_refused_in_auto_mode(hass, fake_snmp):
     result = await _start(hass, "3")
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {**ADM_INPUT, "auth_key": "short"})
+    result = await _configure(hass, result["flow_id"], {**ADM_INPUT, "auth_key": "short"})
     assert result["errors"] == {"base": "key_too_short"}
     assert fake_snmp.requests == 0  # refused before touching the network
+
+
+async def test_the_simple_form_is_enough(hass, fake_snmp):
+    """A user who only types the user name and password (advanced section untouched) gets a working entry."""
+    fake_snmp.v3_accepts = ("md5", "des")
+    result = await _start(hass, "3")
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {
+        "username": "snmp", "auth_key": "snmp-pass-1",
+        "advanced": {"auth_protocol": "auto", "priv_protocol": "auto"}})  # frontend sends the defaults
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert (result["data"]["auth_protocol"], result["data"]["priv_protocol"]) == ("md5", "des")
+    await hass.async_block_till_done()
+
+
+async def test_every_form_can_be_serialized_for_the_frontend(hass, make_entry, fake_snmp):
+    """The frontend gets forms through probatio.to_field_list; sections and selectors must survive it."""
+    import probatio
+    from homeassistant.helpers import config_validation as cv
+
+    def fields(result):
+        return probatio.to_field_list(result["data_schema"], custom_serializer=cv.custom_serializer)
+
+    flow = await hass.config_entries.flow.async_init(DOMAIN, context={"source": "user"})
+    assert {f["name"] for f in fields(flow)} == {"host", "name", "port", "snmp_version"}
+    v2c = await _configure(hass, flow["flow_id"], {"host": "192.0.2.77", "port": 161, "snmp_version": "2c"})
+    assert [f["name"] for f in fields(v2c)] == ["community"]
+
+    flow = await hass.config_entries.flow.async_init(DOMAIN, context={"source": "user"})
+    v3 = await _configure(hass, flow["flow_id"], {"host": "192.0.2.78", "port": 161, "snmp_version": "3"})
+    top = {f["name"]: f for f in fields(v3)}
+    assert set(top) == {"username", "auth_key", "advanced"}
+    assert top["advanced"]["type"] == "expandable" and top["advanced"]["expanded"] is False
+    assert {f["name"] for f in top["advanced"]["schema"]} == {"auth_protocol", "priv_protocol", "priv_key"}
+    assert top["auth_key"]["selector"]["text"]["type"] == "password"  # masked in the UI
+
+    entry = await make_entry()
+    options = await hass.config_entries.options.async_init(entry.entry_id)
+    assert {f["name"] for f in fields(options)} == {"scan_interval", "interfaces"}
+    reconf = await entry.start_reconfigure_flow(hass)
+    assert {f["name"] for f in fields(reconf)} == {"host", "port", "snmp_version"}

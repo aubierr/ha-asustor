@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "输入在 ADM（服务 > SNMP）中设置的 SNMP v3 用户名和密码。协议保持“自动”即可，会为您自动检测。",
+        "description": "输入在 ADM（服务 > SNMP）中设置的 SNMP v3 用户名和密码。协议会自动检测。",
         "data": {
           "username": "用户名",
-          "auth_protocol": "认证协议",
-          "auth_key": "密码",
-          "priv_protocol": "加密协议",
-          "priv_key": "加密密码（留空则与上方密码相同）"
+          "auth_key": "密码"
+        },
+        "sections": {
+          "advanced": {
+            "name": "高级选项",
+            "description": "仅在协议自动检测不起作用时才需要修改。",
+            "data": {
+              "auth_protocol": "认证协议",
+              "priv_protocol": "加密协议",
+              "priv_key": "加密密码（留空则与上方密码相同）"
+            }
+          }
         }
       }
     },

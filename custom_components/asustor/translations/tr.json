@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "ADM'de (Hizmetler > SNMP) belirlediğiniz SNMP v3 kullanıcısını ve parolasını girin. Protokolleri Otomatik bırakın: sizin için algılanır.",
+        "description": "ADM'de (Hizmetler > SNMP) belirlediğiniz SNMP v3 kullanıcısını ve parolasını girin. Protokoller otomatik olarak algılanır.",
         "data": {
           "username": "Kullanıcı adı",
-          "auth_protocol": "Kimlik doğrulama protokolü",
-          "auth_key": "Parola",
-          "priv_protocol": "Şifreleme protokolü",
-          "priv_key": "Şifreleme parolası (boş = parola ile aynı)"
+          "auth_key": "Parola"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Gelişmiş seçenekler",
+            "description": "Yalnızca protokollerin otomatik algılanması çalışmıyorsa değiştirin.",
+            "data": {
+              "auth_protocol": "Kimlik doğrulama protokolü",
+              "priv_protocol": "Şifreleme protokolü",
+              "priv_key": "Şifreleme parolası (boş = parola ile aynı)"
+            }
+          }
         }
       }
     },

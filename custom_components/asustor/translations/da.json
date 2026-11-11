@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Angiv SNMP v3-brugeren og adgangskoden, der er indstillet i ADM (Tjenester > SNMP). Lad protokollerne stå på Automatisk: de registreres for dig.",
+        "description": "Angiv SNMP v3-brugeren og adgangskoden, der er indstillet i ADM (Tjenester > SNMP). Protokollerne registreres automatisk.",
         "data": {
           "username": "Brugernavn",
-          "auth_protocol": "Godkendelsesprotokol",
-          "auth_key": "Adgangskode",
-          "priv_protocol": "Krypteringsprotokol",
-          "priv_key": "Krypteringsadgangskode (tom = samme som adgangskoden)"
+          "auth_key": "Adgangskode"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Avancerede indstillinger",
+            "description": "Ændr kun, hvis den automatiske registrering af protokollerne ikke virker.",
+            "data": {
+              "auth_protocol": "Godkendelsesprotokol",
+              "priv_protocol": "Krypteringsprotokol",
+              "priv_key": "Krypteringsadgangskode (tom = samme som adgangskoden)"
+            }
+          }
         }
       }
     },

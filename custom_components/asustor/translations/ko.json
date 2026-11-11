@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "ADM(서비스 > SNMP)에서 설정한 SNMP v3 사용자와 비밀번호를 입력하세요. 프로토콜은 '자동'으로 두면 알아서 감지됩니다.",
+        "description": "ADM(서비스 > SNMP)에서 설정한 SNMP v3 사용자와 비밀번호를 입력하세요. 프로토콜은 자동으로 감지됩니다.",
         "data": {
           "username": "사용자 이름",
-          "auth_protocol": "인증 프로토콜",
-          "auth_key": "비밀번호",
-          "priv_protocol": "암호화 프로토콜",
-          "priv_key": "암호화 비밀번호(비워 두면 위 비밀번호와 동일)"
+          "auth_key": "비밀번호"
+        },
+        "sections": {
+          "advanced": {
+            "name": "고급 옵션",
+            "description": "프로토콜 자동 감지가 작동하지 않을 때만 변경하세요.",
+            "data": {
+              "auth_protocol": "인증 프로토콜",
+              "priv_protocol": "암호화 프로토콜",
+              "priv_key": "암호화 비밀번호(비워 두면 위 비밀번호와 동일)"
+            }
+          }
         }
       }
     },

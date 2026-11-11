@@ -61,20 +61,49 @@ Certains capteurs de diagnostic (adresse MAC, fuseau horaire, taille des disques
 
 Les volumes, disques et interfaces sont détectés automatiquement.
 
-## Prérequis
+## Prérequis : activer SNMP sur le NAS
 
-Dans ADM : **Services → SNMP**, activer le service et définir une communauté (par défaut `public`).
+L'intégration lit le NAS en SNMP : ce service est **désactivé par défaut** sur ADM. Pour l'activer :
 
-> Pour limiter l'exposition, préférez une communauté personnalisée et restreignez l'accès à l'IP de Home Assistant.
+1. Ouvrez **ADM** dans votre navigateur et connectez-vous avec un compte administrateur.
+2. Allez dans **Services** → **SNMP**.
+3. Cochez **Activer le service SNMP**.
+4. Choisissez comment Home Assistant s'authentifiera (vous pouvez cocher les deux) :
+   - **SNMP Service V1 / SNMP V2** : saisissez une **Communauté** (`public` par défaut, mieux vaut en choisir une autre). C'est le plus simple.
+   - **SNMP Service V3** : saisissez un **Nom d'utilisateur** et un **Mot de passe** (8 caractères minimum), puis confirmez le mot de passe. Plus sûr, voir [SNMP v2c ou v3](#snmp-v2c-ou-v3).
+5. Laissez *Niveau de trap* et *Adresse de trap* tels quels : ils servent à envoyer des alertes vers un serveur de supervision, pas à Home Assistant.
+6. Cliquez sur **Appliquer**. ADM affiche « Ce service a déjà été activé avec succès » une fois le service démarré.
+
+Si vous utilisez le **pare-feu d'ADM** (*Paramètres* → *Sécurité* → *Pare-feu*), autorisez le port **UDP 161** depuis l'adresse IP de Home Assistant.
+
+<details>
+<summary>🇬🇧 English: how to enable SNMP on your ASUSTOR NAS</summary>
+
+SNMP is **off by default** on ADM.
+
+1. Open **ADM** in your browser and sign in as an administrator.
+2. Go to **Services** → **SNMP**.
+3. Tick **Enable SNMP service**.
+4. Pick how Home Assistant will authenticate (you can tick both):
+   - **SNMP Service V1 / SNMP V2**: enter a **Community** (`public` by default; a custom value is better). Simplest option.
+   - **SNMP Service V3**: enter a **User name** and a **Password** (at least 8 characters) and confirm it. Safer, see [SNMP v2c or v3](#snmp-v2c-ou-v3).
+5. Leave *SNMP trap level* and *Trap address* as they are: they send alerts to a monitoring server, not to Home Assistant.
+6. Click **Apply**.
+
+If ADM's **firewall** is enabled (*Settings* → *Security* → *Firewall*), allow **UDP port 161** from your Home Assistant's IP address.
+
+</details>
+
+> Pour limiter l'exposition, préférez une communauté personnalisée (ou SNMP v3) et restreignez l'accès à l'IP de Home Assistant.
 
 ### SNMP v2c ou v3
 
 - **v2c** : une communauté (mot de passe en clair sur le réseau). Simple, adapté à un réseau local de confiance.
 - **v3** : un utilisateur et un mot de passe, avec authentification et chiffrement.
 
-**Avec ADM** (*Services → SNMP*), cochez *SNMP Service V3* et renseignez un **nom d'utilisateur** et un **mot de passe** (8 caractères minimum). ADM ne demande ni protocole ni second mot de passe : dans Home Assistant, choisissez « v3 », saisissez ces deux valeurs et laissez les protocoles sur **Automatique**. L'intégration essaie les combinaisons courantes (authentification SHA ou MD5, chiffrement AES, DES ou aucun) avec ce mot de passe et retient celle que votre NAS accepte. Le chiffrement réutilise le mot de passe, sauf si vous en indiquez un autre.
+**Avec ADM**, qui ne demande qu'un **nom d'utilisateur** et un **mot de passe**, il suffit de saisir ces deux valeurs dans Home Assistant : les protocoles sont **détectés automatiquement**. L'intégration essaie les combinaisons courantes (authentification SHA ou MD5, chiffrement AES, DES ou aucun) avec ce mot de passe et retient celle que votre NAS accepte. Le chiffrement réutilise le mot de passe.
 
-Pour un autre agent SNMP v3, vous pouvez imposer les protocoles (MD5, SHA, SHA-224/256/384/512 ; DES, 3DES, AES-128/192/256).
+Les *Options avancées* (repliées par défaut) permettent d'imposer les protocoles (MD5, SHA, SHA-224/256/384/512 ; DES, 3DES, AES-128/192/256) ou un second mot de passe de chiffrement, pour un autre agent SNMP v3.
 
 Si les identifiants v3 sont refusés plus tard, Home Assistant propose de les ressaisir (ré-authentification). Avec v2c, une mauvaise communauté ressemble à un NAS éteint : aucune ré-authentification n'est possible.
 
@@ -95,9 +124,9 @@ Copiez `custom_components/asustor` dans le dossier `config/custom_components/` d
 
 Ou : **Paramètres → Appareils et services → Ajouter une intégration → ASUSTOR NAS**, puis renseignez :
 
-- **Hôte** : l'IP du NAS (ex. `192.168.10.18`)
-- **Port** : `161`
-- **Communauté SNMP** : `public` (ou la vôtre)
+1. **Hôte** (l'IP du NAS, ex. `192.168.10.18`), **port** (`161`) et **version SNMP** :
+   - **v2c** → la **communauté** configurée dans ADM (`public` par défaut) ;
+   - **v3** → le **nom d'utilisateur** et le **mot de passe** configurés dans ADM.
 
 Les données sont rafraîchies toutes les 60 secondes.
 
@@ -132,7 +161,9 @@ Le fichier MIB est téléchargeable dans ADM (Services → SNMP).
 
 ## Dépannage
 
-- **Impossible de se connecter** : vérifiez que SNMP est activé, la communauté, et que le port UDP 161 est joignable depuis Home Assistant.
+- **Impossible de se connecter** : vérifiez que SNMP est activé dans ADM (voir [Prérequis](#prérequis--activer-snmp-sur-le-nas)), la communauté ou l'utilisateur v3, et que le port UDP 161 est joignable depuis Home Assistant (pare-feu d'ADM, VLAN).
+- **« Identifiants refusés » en v3** : vérifiez le nom d'utilisateur et le mot de passe saisis dans ADM (8 caractères minimum). Les protocoles étant détectés automatiquement, seule une erreur d'identifiants provoque ce message.
+- **Les textes du formulaire sont en anglais ou obsolètes** : redémarrez Home Assistant après la mise à jour, puis rechargez la page (Ctrl+F5).
 - **Capteur manquant** : votre modèle n'expose peut-être pas l'OID correspondant (voir Compatibilité).
 
 ## Contribuer
@@ -154,6 +185,6 @@ Ils couvrent la lecture SNMP (v2c et v3), les appareils et entités, les capteur
 
 ## Licence
 
-Version 0.1.0-beta.6 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.8 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
 
 > ASUSTOR et son logo sont des marques de leur propriétaire (ASUSTOR Inc.). Ce projet est indépendant et n'est ni affilié ni approuvé par ASUSTOR ; le logo n'est utilisé que pour identifier les NAS compatibles.

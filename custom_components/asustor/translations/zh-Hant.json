@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "輸入在 ADM（服務 > SNMP）中設定的 SNMP v3 使用者與密碼。通訊協定保持「自動」即可，系統會自動偵測。",
+        "description": "輸入在 ADM（服務 > SNMP）中設定的 SNMP v3 使用者與密碼。通訊協定會自動偵測。",
         "data": {
           "username": "使用者名稱",
-          "auth_protocol": "驗證通訊協定",
-          "auth_key": "密碼",
-          "priv_protocol": "加密通訊協定",
-          "priv_key": "加密密碼（留空則與上方密碼相同）"
+          "auth_key": "密碼"
+        },
+        "sections": {
+          "advanced": {
+            "name": "進階選項",
+            "description": "僅在通訊協定自動偵測無法運作時才需要修改。",
+            "data": {
+              "auth_protocol": "驗證通訊協定",
+              "priv_protocol": "加密通訊協定",
+              "priv_key": "加密密碼（留空則與上方密碼相同）"
+            }
+          }
         }
       }
     },

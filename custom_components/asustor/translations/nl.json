@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Voer de SNMP v3-gebruiker en het wachtwoord in die in ADM zijn ingesteld (Services > SNMP). Laat de protocollen op Automatisch staan: ze worden voor u gedetecteerd.",
+        "description": "Voer de SNMP v3-gebruiker en het wachtwoord in die in ADM zijn ingesteld (Services > SNMP). De protocollen worden automatisch gedetecteerd.",
         "data": {
           "username": "Gebruikersnaam",
-          "auth_protocol": "Authenticatieprotocol",
-          "auth_key": "Wachtwoord",
-          "priv_protocol": "Versleutelingsprotocol",
-          "priv_key": "Versleutelingswachtwoord (leeg = zelfde als het wachtwoord)"
+          "auth_key": "Wachtwoord"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Geavanceerde opties",
+            "description": "Wijzig dit alleen als de automatische detectie van de protocollen niet werkt.",
+            "data": {
+              "auth_protocol": "Authenticatieprotocol",
+              "priv_protocol": "Versleutelingsprotocol",
+              "priv_key": "Versleutelingswachtwoord (leeg = zelfde als het wachtwoord)"
+            }
+          }
         }
       }
     },

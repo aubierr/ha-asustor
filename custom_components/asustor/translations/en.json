@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Enter the SNMP v3 user and password set in ADM (Services > SNMP). Leave the protocols on Automatic: they are detected for you.",
+        "description": "Enter the SNMP v3 user and password set in ADM (Services > SNMP). The protocols are detected automatically.",
         "data": {
           "username": "Username",
-          "auth_protocol": "Authentication protocol",
-          "auth_key": "Password",
-          "priv_protocol": "Encryption protocol",
-          "priv_key": "Encryption password (leave empty to reuse the password)"
+          "auth_key": "Password"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Advanced options",
+            "description": "Only change these if automatic detection of the protocols does not work.",
+            "data": {
+              "auth_protocol": "Authentication protocol",
+              "priv_protocol": "Encryption protocol",
+              "priv_key": "Encryption password (leave empty to reuse the password)"
+            }
+          }
         }
       }
     },

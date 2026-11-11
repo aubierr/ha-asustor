@@ -29,13 +29,21 @@
       },
       "v3": {
         "title": "SNMP v3",
-        "description": "Geben Sie den in ADM (Dienste > SNMP) festgelegten SNMP-v3-Benutzer und das Passwort ein. Lassen Sie die Protokolle auf Automatisch: Sie werden für Sie erkannt.",
+        "description": "Geben Sie den in ADM (Dienste > SNMP) festgelegten SNMP-v3-Benutzer und das Passwort ein. Die Protokolle werden automatisch erkannt.",
         "data": {
           "username": "Benutzername",
-          "auth_protocol": "Authentifizierungsprotokoll",
-          "auth_key": "Passwort",
-          "priv_protocol": "Verschlüsselungsprotokoll",
-          "priv_key": "Verschlüsselungspasswort (leer = wie das Passwort)"
+          "auth_key": "Passwort"
+        },
+        "sections": {
+          "advanced": {
+            "name": "Erweiterte Optionen",
+            "description": "Nur ändern, wenn die automatische Protokollerkennung nicht funktioniert.",
+            "data": {
+              "auth_protocol": "Authentifizierungsprotokoll",
+              "priv_protocol": "Verschlüsselungsprotokoll",
+              "priv_key": "Verschlüsselungspasswort (leer = wie das Passwort)"
+            }
+          }
         }
       }
     },
