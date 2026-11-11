@@ -8,6 +8,8 @@
 # ASUSTOR NAS pour Home Assistant
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
+[![Tests](https://github.com/aubierr/ha-asustor/actions/workflows/tests.yml/badge.svg)](https://github.com/aubierr/ha-asustor/actions/workflows/tests.yml)
+[![Validate](https://github.com/aubierr/ha-asustor/actions/workflows/validate.yml/badge.svg)](https://github.com/aubierr/ha-asustor/actions/workflows/validate.yml)
 [![Version](https://img.shields.io/github/v/release/aubierr/ha-asustor)](https://github.com/aubierr/ha-asustor/releases)
 [![Licence](https://img.shields.io/github/license/aubierr/ha-asustor)](LICENSE)
 
@@ -131,10 +133,23 @@ Le fichier MIB est téléchargeable dans ADM (Services → SNMP).
 
 ## Contribuer
 
-Les issues et pull requests sont les bienvenues, notamment des sorties `snmpwalk` d'autres modèles.
+Les issues et pull requests sont les bienvenues, notamment des sorties `snmpwalk` (ou le fichier de diagnostics) d'autres modèles.
+
+### Lancer les tests
+
+Les tests rejouent les réponses SNMP enregistrées d'un AS5202T (`tests/fixtures/as5202t.json`, données privées remplacées) : aucun NAS n'est nécessaire.
+
+```bash
+pip install -r requirements_test.txt
+pytest
+```
+
+Ils couvrent la lecture SNMP (v2c et v3), les appareils et entités, les capteurs binaires, le débit, le nettoyage des appareils, les flux de configuration (ajout, reconfiguration, ré-authentification, options), les diagnostics et la cohérence des 23 traductions. GitHub Actions les exécute à chaque push, avec `hassfest` et la validation HACS.
+
+> Home Assistant ne fonctionne pas nativement sous Windows : utilisez Linux, macOS ou WSL pour lancer les tests.
 
 ## Licence
 
-Version 0.1.0-beta.4 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
+Version 0.1.0-beta.5 (pré-release) — distribué sous licence [MIT](LICENSE) © 2026 Kévin Aubier.
 
 > ASUSTOR et son logo sont des marques de leur propriétaire (ASUSTOR Inc.). Ce projet est indépendant et n'est ni affilié ni approuvé par ASUSTOR ; le logo n'est utilisé que pour identifier les NAS compatibles.
