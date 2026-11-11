@@ -16,6 +16,17 @@ from pysnmp.hlapi.v3arch.asyncio import (
 )
 
 
+def create_engine() -> SnmpEngine:
+    """Create an SnmpEngine with all bundled MIB modules preloaded.
+
+    pysnmp otherwise loads MIB files lazily on the first request, i.e. inside
+    the event loop. Call this from an executor thread.
+    """
+    engine = SnmpEngine()
+    engine.get_mib_builder().load_modules()
+    return engine
+
+
 class SnmpError(Exception):
     """SNMP request failed."""
 

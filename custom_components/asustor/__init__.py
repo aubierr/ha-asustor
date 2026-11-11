@@ -5,17 +5,16 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
-from pysnmp.hlapi.v3arch.asyncio import SnmpEngine
 
 from .const import CONF_COMMUNITY
 from .coordinator import AsustorCoordinator
-from .snmp import AsustorSnmp
+from .snmp import AsustorSnmp, create_engine
 
 PLATFORMS = [Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    engine = await hass.async_add_executor_job(SnmpEngine)  # loads MIBs: blocking
+    engine = await hass.async_add_executor_job(create_engine)  # preloads MIBs (blocking I/O)
     client = AsustorSnmp(
         engine, entry.data[CONF_HOST], entry.data[CONF_PORT], entry.data[CONF_COMMUNITY]
     )

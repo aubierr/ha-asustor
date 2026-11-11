@@ -7,7 +7,6 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT
-from pysnmp.hlapi.v3arch.asyncio import SnmpEngine
 
 from .const import (
     CONF_COMMUNITY,
@@ -17,7 +16,7 @@ from .const import (
     OID_SYS_DESCR,
     OID_SYS_NAME,
 )
-from .snmp import AsustorSnmp, to_str
+from .snmp import AsustorSnmp, create_engine, to_str
 
 
 class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -32,7 +31,7 @@ class AsustorConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             await self.async_set_unique_id(user_input[CONF_HOST])
             self._abort_if_unique_id_configured()
-            engine = await self.hass.async_add_executor_job(SnmpEngine)
+            engine = await self.hass.async_add_executor_job(create_engine)
             res: dict[str, Any] = {}
             try:
                 client = AsustorSnmp(
