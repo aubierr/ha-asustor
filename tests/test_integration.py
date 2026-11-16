@@ -236,7 +236,7 @@ async def test_nas_device_version_follows_adm_upgrades(hass, make_entry, fake_sn
     fake_snmp.set_get(OID_AS_ADM_VERSION, "s", "9.9.9")
     await entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
-    device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    device = dr.async_get(hass).async_get_device_by_identifier((DOMAIN, entry.entry_id), entry.entry_id)
     assert device.sw_version == "9.9.9"
 
 
