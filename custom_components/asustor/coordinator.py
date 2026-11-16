@@ -27,6 +27,10 @@ _TEXT_OIDS = {
 }
 
 
+# Tables read without _safe_walk: on a transient error their previous value is kept.
+_KEEP_ON_ERROR = {"volumes", "interfaces"}
+
+
 class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Polls the NAS over SNMP."""
 
@@ -122,11 +126,27 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._interfaces(), self._disks(), self._diskio(), self._ups(),
             return_exceptions=True,
         )
-        for res in results:
+        data: dict[str, Any] = {}
+        stale: set[str] = set()
+        for key, res in zip(keys, results, strict=True):
             if isinstance(res, BaseException):
+                # A transient SNMP error in one mandatory table must not blank every entity:
+                # keep that group's previous value. Auth errors and a first poll still fail.
+                if (
+                    key in _KEEP_ON_ERROR
+                    and self.data
+                    and key in self.data
+                    and isinstance(res, SnmpError)
+                    and not isinstance(res, SnmpAuthError)
+                ):
+                    _LOGGER.debug("Keeping previous %s data after SNMP error: %s", key, res)
+                    data[key] = self.data[key]
+                    stale.add(key)
+                    continue
                 raise res
-        data = dict(zip(keys, results, strict=True))
-        data["interfaces"] = self._with_rates(data["interfaces"])
+            data[key] = res
+        if "interfaces" not in stale:
+            data["interfaces"] = self._with_rates(data["interfaces"])
         data["system"] = system
         self.last_poll_duration = round(time.monotonic() - started, 2)
         _LOGGER.debug("ASUSTOR poll took %.2f s", self.last_poll_duration)

@@ -313,41 +313,44 @@ class AsustorOptionsFlow(OptionsFlowWithReload):
     """Polling interval and tracked network interfaces (reloads the entry on save)."""
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        if user_input is not None:
-            return self.async_create_entry(
-                data={
-                    CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
-                    CONF_INTERFACES: user_input[CONF_INTERFACES],
-                }
-            )
-
         coordinator = getattr(self.config_entry, "runtime_data", None)
-        selected = self.config_entry.options.get(CONF_INTERFACES)
-        available: list[str] = []
+        stored = self.config_entry.options.get(CONF_INTERFACES)  # None = default rule
+
+        # Without a running coordinator (NAS offline, setup retrying) the interface list is unknown:
+        # the field is hidden and the stored value is left untouched instead of being overwritten.
+        default_selection: list[str] | None = None
+        if coordinator is not None:
+            default_selection = [i["name"] for i in coordinator.data["interfaces"].values()]
+
+        if user_input is not None:
+            options: dict[str, Any] = {CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL])}
+            chosen = user_input.get(CONF_INTERFACES, stored)
+            # Keep following the default rule if the user did not change the displayed selection.
+            if stored is None and chosen is not None and sorted(chosen) == sorted(default_selection or []):
+                chosen = None
+            if chosen is not None:
+                options[CONF_INTERFACES] = chosen
+            return self.async_create_entry(data=options)
+
+        fields: dict[Any, Any] = {
+            vol.Required(
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+            ): NumberSelector(
+                NumberSelectorConfig(
+                    min=MIN_SCAN_INTERVAL,
+                    max=MAX_SCAN_INTERVAL,
+                    step=1,
+                    unit_of_measurement="s",
+                    mode=NumberSelectorMode.BOX,
+                )
+            )
+        }
         if coordinator is not None:
             available = await coordinator.async_list_interfaces()
-            if selected is None:  # currently using the default rule
-                selected = [i["name"] for i in coordinator.data["interfaces"].values()]
-        selected = selected or []
-        choices = sorted(set(available) | set(selected))
-
-        schema = vol.Schema(
-            {
-                vol.Required(
-                    CONF_SCAN_INTERVAL,
-                    default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): NumberSelector(
-                    NumberSelectorConfig(
-                        min=MIN_SCAN_INTERVAL,
-                        max=MAX_SCAN_INTERVAL,
-                        step=1,
-                        unit_of_measurement="s",
-                        mode=NumberSelectorMode.BOX,
-                    )
-                ),
-                vol.Required(CONF_INTERFACES, default=selected): SelectSelector(
-                    SelectSelectorConfig(options=choices, multiple=True, mode=SelectSelectorMode.DROPDOWN)
-                ),
-            }
-        )
-        return self.async_show_form(step_id="init", data_schema=schema)
+            selected = stored if stored is not None else default_selection
+            choices = sorted(set(available) | set(selected or []))
+            fields[vol.Required(CONF_INTERFACES, default=selected or [])] = SelectSelector(
+                SelectSelectorConfig(options=choices, multiple=True, mode=SelectSelectorMode.DROPDOWN)
+            )
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(fields))

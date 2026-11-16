@@ -85,7 +85,7 @@ SYSTEM_SENSORS: tuple[SensorEntityDescription, ...] = (
     D("load_15", state_class=MEAS, icon="mdi:gauge", entity_registry_enabled_default=False),
     D("uptime", device_class=SensorDeviceClass.DURATION,
       native_unit_of_measurement=UnitOfTime.SECONDS, suggested_unit_of_measurement=UnitOfTime.DAYS,
-      state_class=TOTAL),
+      state_class=MEAS),  # resets on reboot: not a cumulative total
     D("timezone", entity_category=DIAG, entity_registry_enabled_default=False),
     D("adm_uptime", entity_category=DIAG, entity_registry_enabled_default=False),
     D("system_time", entity_category=DIAG, entity_registry_enabled_default=False),

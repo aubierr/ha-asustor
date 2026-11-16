@@ -13,8 +13,9 @@ from custom_components.asustor.binary_sensor import (
     ups_on_battery,
     volume_problem,
 )
-from custom_components.asustor.const import DOMAIN
+from custom_components.asustor.const import DOMAIN, OID_HR_STORAGE_SIZE, OID_IF_HC_IN
 from custom_components.asustor.device import prune_stale_devices
+from custom_components.asustor.snmp import SnmpError
 from custom_components.asustor.update import update_available
 
 from .conftest import V2C_DATA, V3_DATA
@@ -142,6 +143,39 @@ async def test_options_limit_interfaces_and_interval(hass, make_entry):
     entry = await make_entry(options={"scan_interval": 30, "interfaces": ["eth1"]})
     assert entry.runtime_data.update_interval.total_seconds() == 30
     assert {i["name"] for i in entry.runtime_data.data["interfaces"].values()} == {"eth1"}
+
+
+async def test_transient_error_in_volume_table_keeps_previous_data(hass, make_entry, fake_snmp):
+    entry = await make_entry()
+    before = entry.runtime_data.data["volumes"]
+    assert before
+    real_walk = fake_snmp.walk
+
+    async def flaky(base):
+        if base == OID_HR_STORAGE_SIZE:
+            raise SnmpError("timeout")
+        return await real_walk(base)
+
+    fake_snmp.walk = flaky
+    await entry.runtime_data.async_refresh()
+    assert entry.runtime_data.last_update_success
+    assert entry.runtime_data.data["volumes"] == before
+
+
+async def test_transient_error_in_interface_table_keeps_previous_data(hass, make_entry, fake_snmp):
+    entry = await make_entry()
+    before = entry.runtime_data.data["interfaces"]
+    real_walk = fake_snmp.walk
+
+    async def flaky(base):
+        if base == OID_IF_HC_IN:
+            raise SnmpError("timeout")
+        return await real_walk(base)
+
+    fake_snmp.walk = flaky
+    await entry.runtime_data.async_refresh()
+    assert entry.runtime_data.last_update_success
+    assert entry.runtime_data.data["interfaces"] == before
 
 
 async def test_ups_creates_a_device_and_binary_sensors(hass, make_entry, fake_snmp):

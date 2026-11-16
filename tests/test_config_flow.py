@@ -162,6 +162,28 @@ async def test_options_flow(hass, make_entry):
     assert {i["name"] for i in entry.runtime_data.data["interfaces"].values()} == {"eth0"}
 
 
+async def test_options_flow_keeps_default_interface_rule_when_selection_unchanged(hass, make_entry):
+    entry = await make_entry()
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    defaults = {str(k): k.default() for k in result["data_schema"].schema if k.default is not None}
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {"scan_interval": 90, "interfaces": defaults["interfaces"]})
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    await hass.async_block_till_done()
+    assert entry.options == {"scan_interval": 90}  # still following the default rule
+
+
+async def test_options_flow_does_not_wipe_interfaces_when_entry_is_not_loaded(hass, make_entry, fake_snmp):
+    fake_snmp.fail()  # NAS offline: setup retries, no coordinator is available
+    entry = await make_entry(options={"interfaces": ["eth1"]})
+    assert entry.state is ConfigEntryState.SETUP_RETRY
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    assert {str(k) for k in result["data_schema"].schema} == {"scan_interval"}
+    result = await hass.config_entries.options.async_configure(result["flow_id"], {"scan_interval": 45})
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert entry.options == {"scan_interval": 45, "interfaces": ["eth1"]}
+
+
 # --- ADM only asks for a user name and one password: protocols are detected -----------------------
 ADM_INPUT = {"username": "snmp", "auth_key": "snmp-pass-1", "auth_protocol": "auto", "priv_protocol": "auto"}
 
