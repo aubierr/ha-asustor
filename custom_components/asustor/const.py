@@ -117,3 +117,5 @@ OID_DISKIO_WRITE = "1.3.6.1.4.1.2021.13.15.1.1.4"
 
 OID_IF_OPER_STATUS = "1.3.6.1.2.1.2.2.1.8"
 OID_IF_HIGH_SPEED = "1.3.6.1.2.1.31.1.1.1.15"
+
+PRUNE_AFTER_MISSES = 3  # polls a child device may be absent before it is removed

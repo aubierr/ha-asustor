@@ -16,14 +16,17 @@ def update_available(status: str | None) -> bool | None:
     """Interpret sysUpgradeAvailable.
 
     ASUSTOR documents "Available"/"Unavailable"; ADM 5.1 actually returns
-    "The ADM is latest version" when up to date.
+    "The ADM is latest version" when up to date. Any other (e.g. localized or transient)
+    text is unknown (None) rather than assumed to be an available update.
     """
     if not status:
         return None
     s = status.lower()
-    if "latest" in s or "unavailable" in s or "up to date" in s:
+    if "latest" in s or "unavailable" in s or "not available" in s or "up to date" in s:
         return False
-    return True
+    if "available" in s or "new version" in s:
+        return True
+    return None
 
 
 async def async_setup_entry(

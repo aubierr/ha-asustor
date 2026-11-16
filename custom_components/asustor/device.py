@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 
-from .const import DOMAIN
+from .const import DOMAIN, PRUNE_AFTER_MISSES
 from .coordinator import AsustorCoordinator
 
 # coordinator data group -> (device kind used in the identifier, display prefix)
@@ -77,7 +77,6 @@ def is_child_identifier(entry: ConfigEntry, ident: str) -> bool:
 # A NAS always has at least one disk and one volume: an empty table means a failed
 # read, not a removal, so those groups are never pruned from an empty result.
 _NEVER_EMPTY_GROUPS = {"disk", "volume"}
-PRUNE_AFTER_MISSES = 3
 
 
 def prune_stale_devices(hass, entry: ConfigEntry, data: dict, missing: dict[str, int]) -> None:

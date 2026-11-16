@@ -14,6 +14,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from . import const as c
+from .const import PRUNE_AFTER_MISSES
 from .snmp import AsustorSnmp, SnmpAuthError, SnmpError, to_int, to_str, to_text
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,6 +54,7 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.sw_version: str | None = None
         self.hw_version: str | None = None
         self.serial: str | None = None
+        self._ups_failures = 0  # consecutive polls where a UPS table could not be read
         self.last_poll_duration: float | None = None  # seconds, for diagnostics
 
     async def _async_update_data(self) -> dict[str, Any]:
@@ -71,12 +73,21 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         skip = ("lo", "veth", "br-", "docker", "virbr", "tun", "tap", "sit", "ip6", "dummy")
         return [n for n in names if not n.startswith(skip)]
 
-    async def _safe_walk(self, oid: str) -> dict[str, Any]:
-        """Walk a subtree; unsupported/empty subtrees (or errors) yield {}."""
+    async def _try_walk(self, oid: str) -> dict[str, Any] | None:
+        """Walk a subtree; None if the request failed (the error is logged at debug level)."""
         try:
             return await self.client.walk(oid)
-        except Exception:  # noqa: BLE001
-            return {}
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.debug("SNMP walk of %s failed: %s", oid, err)
+            return None
+
+    async def _safe_walk(self, oid: str) -> dict[str, Any]:
+        """Walk a subtree; unsupported/empty subtrees (or errors) yield {}."""
+        return await self._try_walk(oid) or {}
+
+    async def _safe_walks(self, *oids: str) -> list[dict[str, Any]]:
+        """Walk several independent subtrees concurrently (the client caps requests in flight)."""
+        return list(await asyncio.gather(*(self._safe_walk(o) for o in oids)))
 
     async def _fetch(self) -> dict[str, Any]:
         started = time.monotonic()
@@ -161,20 +172,17 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return {k: {"speed": to_int(v)} for k, v in walked.items()}
 
     async def _temps(self) -> dict[str, dict[str, Any]]:
-        cpu = await self._safe_walk(c.OID_AS_CPU_TEMP_TABLE)
-        sys_ = await self._safe_walk(c.OID_AS_SYS_TEMP_TABLE)
+        cpu, sys_ = await self._safe_walks(c.OID_AS_CPU_TEMP_TABLE, c.OID_AS_SYS_TEMP_TABLE)
         return {
             idx: {"cpu": to_int(cpu.get(idx)), "system": to_int(sys_.get(idx))}
             for idx in sorted(set(cpu) | set(sys_))
         }
 
     async def _networks(self) -> dict[str, dict[str, Any]]:
-        names = await self._safe_walk(c.OID_AS_NET_NAME)
-        mac = await self._safe_walk(c.OID_AS_NET_MAC)
-        v4 = await self._safe_walk(c.OID_AS_NET_IPV4)
-        v6 = await self._safe_walk(c.OID_AS_NET_IPV6)
-        sent = await self._safe_walk(c.OID_AS_NET_SENT)
-        recv = await self._safe_walk(c.OID_AS_NET_RECEIVED)
+        names, mac, v4, v6, sent, recv = await self._safe_walks(
+            c.OID_AS_NET_NAME, c.OID_AS_NET_MAC, c.OID_AS_NET_IPV4, c.OID_AS_NET_IPV6,
+            c.OID_AS_NET_SENT, c.OID_AS_NET_RECEIVED,
+        )
         out: dict[str, dict[str, Any]] = {}
         for idx, n in names.items():
             out[idx] = {
@@ -189,14 +197,13 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _volumes(self) -> dict[str, dict[str, Any]]:
         cl = self.client
-        types = await cl.walk(c.OID_HR_STORAGE_TYPE)
-        descr = await cl.walk(c.OID_HR_STORAGE_DESCR)
-        units = await cl.walk(c.OID_HR_STORAGE_UNITS)
-        size = await cl.walk(c.OID_HR_STORAGE_SIZE)
-        used = await cl.walk(c.OID_HR_STORAGE_USED)
-        status = await self._safe_walk(c.OID_AS_VOLUME_STATUS)
-        level = await self._safe_walk(c.OID_AS_VOLUME_LEVEL)
-        fs = await self._safe_walk(c.OID_AS_VOLUME_FS)
+        (types, descr, units, size, used), (status, level, fs) = await asyncio.gather(
+            asyncio.gather(*(cl.walk(o) for o in (
+                c.OID_HR_STORAGE_TYPE, c.OID_HR_STORAGE_DESCR, c.OID_HR_STORAGE_UNITS,
+                c.OID_HR_STORAGE_SIZE, c.OID_HR_STORAGE_USED,
+            ))),
+            self._safe_walks(c.OID_AS_VOLUME_STATUS, c.OID_AS_VOLUME_LEVEL, c.OID_AS_VOLUME_FS),
+        )
         out: dict[str, dict[str, Any]] = {}
         for idx, t in types.items():
             name = to_str(descr.get(idx, ""))
@@ -222,11 +229,10 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _interfaces(self) -> dict[str, dict[str, Any]]:
         cl = self.client
-        descr = await cl.walk(c.OID_IF_DESCR)
-        rx = await cl.walk(c.OID_IF_HC_IN)
-        tx = await cl.walk(c.OID_IF_HC_OUT)
-        oper = await self._safe_walk(c.OID_IF_OPER_STATUS)
-        speed = await self._safe_walk(c.OID_IF_HIGH_SPEED)
+        (descr, rx, tx), (oper, speed) = await asyncio.gather(
+            asyncio.gather(*(cl.walk(o) for o in (c.OID_IF_DESCR, c.OID_IF_HC_IN, c.OID_IF_HC_OUT))),
+            self._safe_walks(c.OID_IF_OPER_STATUS, c.OID_IF_HIGH_SPEED),
+        )
         out: dict[str, dict[str, Any]] = {}
         for idx, d in descr.items():
             name = to_str(d)
@@ -265,13 +271,10 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return rows
 
     async def _disks(self) -> dict[str, dict[str, Any]]:
-        temps = await self._safe_walk(c.OID_AS_DISK_TEMP)
-        health = await self._safe_walk(c.OID_AS_DISK_HEALTH)
-        smart = await self._safe_walk(c.OID_AS_DISK_SMART)
-        models = await self._safe_walk(c.OID_AS_DISK_MODEL)
-        names = await self._safe_walk(c.OID_AS_DISK_NAME)
-        types = await self._safe_walk(c.OID_AS_DISK_TYPE)
-        sizes = await self._safe_walk(c.OID_AS_DISK_SIZE)
+        temps, health, smart, models, names, types, sizes = await self._safe_walks(
+            c.OID_AS_DISK_TEMP, c.OID_AS_DISK_HEALTH, c.OID_AS_DISK_SMART, c.OID_AS_DISK_MODEL,
+            c.OID_AS_DISK_NAME, c.OID_AS_DISK_TYPE, c.OID_AS_DISK_SIZE,
+        )
         out: dict[str, dict[str, Any]] = {}
         for idx in sorted(set(temps) | set(health) | set(smart), key=lambda x: int(x) if x.isdigit() else 0):
             t = to_int(temps.get(idx))
@@ -288,9 +291,7 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return out
 
     async def _diskio(self) -> dict[str, dict[str, Any]]:
-        dev = await self._safe_walk(c.OID_DISKIO_DEVICE)
-        rd = await self._safe_walk(c.OID_DISKIO_READ)
-        wr = await self._safe_walk(c.OID_DISKIO_WRITE)
+        dev, rd, wr = await self._safe_walks(c.OID_DISKIO_DEVICE, c.OID_DISKIO_READ, c.OID_DISKIO_WRITE)
         out: dict[str, dict[str, Any]] = {}
         for idx, d in dev.items():
             name = to_text(d)
@@ -299,9 +300,16 @@ class AsustorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return out
 
     async def _ups(self) -> dict[str, dict[str, Any]]:
-        cols = {
-            key: await self._safe_walk(f"{c.OID_AS_UPS}.{col}") for key, col in c.UPS_COLUMNS.items()
-        }
+        walked = await asyncio.gather(*(self._try_walk(f"{c.OID_AS_UPS}.{col}") for col in c.UPS_COLUMNS.values()))
+        if any(w is None for w in walked):
+            # A failed read must not look like "UPS unplugged" (that would prune its device):
+            # keep the previous rows for a couple of polls before trusting the empty result.
+            self._ups_failures += 1
+            if self._ups_failures < PRUNE_AFTER_MISSES and self.data:
+                return self.data.get("ups", {})
+        else:
+            self._ups_failures = 0
+        cols = {key: w or {} for key, w in zip(c.UPS_COLUMNS, walked, strict=True)}
         out: dict[str, dict[str, Any]] = {}
         for idx in cols["manufacturer"].keys() | cols["model"].keys() | cols["status"].keys():
             manu = to_text(cols["manufacturer"].get(idx, ""))

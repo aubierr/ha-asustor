@@ -229,7 +229,7 @@ async def async_setup_entry(
     @callback
     def _discover() -> None:
         new = [
-            NasSensor(coordinator, entry, desc, group, idx, uid, attrs, placeholders)
+            NasSensor(coordinator, entry, desc, group, idx, uid, attrs, placeholders, known)
             for uid, group, idx, desc, attrs, placeholders in _specs(coordinator.data)
             if uid not in known
         ]
@@ -246,14 +246,23 @@ class NasSensor(CoordinatorEntity[AsustorCoordinator], SensorEntity):
 
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator, entry, description, group, idx, uid, attrs=(), placeholders=None) -> None:
+    def __init__(
+        self, coordinator, entry, description, group, idx, uid, attrs=(), placeholders=None, known=None
+    ) -> None:
         super().__init__(coordinator)
+        self._known = known
         self.entity_description = description
         self._group, self._idx, self._attrs = group, idx, attrs
         self.unique_id_suffix = uid
         self._attr_unique_id = f"{entry.entry_id}_{uid}"
         self._attr_translation_placeholders = placeholders or {}
         self._attr_device_info = device_info(coordinator, entry, group, idx)
+
+    async def async_will_remove_from_hass(self) -> None:
+        # Forget the id so the entity is created again if its device comes back.
+        if self._known is not None:
+            self._known.discard(self.unique_id_suffix)
+        await super().async_will_remove_from_hass()
 
     def _row(self) -> dict[str, Any]:
         data = self.coordinator.data[self._group]

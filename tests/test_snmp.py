@@ -4,8 +4,11 @@ import pytest
 from pysnmp.hlapi.v3arch.asyncio import CommunityData, UsmUserData
 from pysnmp.proto.rfc1902 import Integer32, OctetString
 
+from custom_components.asustor import snmp as snmp_module
 from custom_components.asustor.snmp import (
     AUTH_PROTOCOLS,
+    MAX_OIDS_PER_GET,
+    AsustorSnmp,
     PRIV_PROTOCOLS,
     SnmpAuthError,
     SnmpError,
@@ -81,3 +84,41 @@ def test_to_int():
     assert to_int(Integer32(5)) == 5
     assert to_int(None) is None
     assert to_int(OctetString(b"abc")) is None
+
+
+class _FakeTarget:
+    created = 0
+
+    @classmethod
+    async def create(cls, *args, **kwargs):
+        cls.created += 1
+        return object()
+
+
+async def test_get_is_split_into_small_requests(monkeypatch):
+    sizes = []
+
+    async def fake_get_cmd(engine, auth, transport, ctx, *objects):
+        sizes.append(len(objects))
+        return None, None, 0, [(f"1.3.6.1.{len(sizes)}.{i}", Integer32(i)) for i in range(len(objects))]
+
+    monkeypatch.setattr(snmp_module, "UdpTransportTarget", _FakeTarget)
+    monkeypatch.setattr(snmp_module, "get_cmd", fake_get_cmd)
+    client = AsustorSnmp(object(), "192.0.2.1", 161, object())
+    result = await client.get([f"1.3.6.1.2.1.1.{i}.0" for i in range(MAX_OIDS_PER_GET * 2 + 3)])
+    assert sorted(sizes) == [3, MAX_OIDS_PER_GET, MAX_OIDS_PER_GET]
+    assert len(result) == MAX_OIDS_PER_GET * 2 + 3
+
+
+async def test_host_is_resolved_again_after_a_failed_request(monkeypatch):
+    async def timeout_get_cmd(engine, auth, transport, ctx, *objects):
+        return "No SNMP response received before timeout", None, 0, []
+
+    _FakeTarget.created = 0
+    monkeypatch.setattr(snmp_module, "UdpTransportTarget", _FakeTarget)
+    monkeypatch.setattr(snmp_module, "get_cmd", timeout_get_cmd)
+    client = AsustorSnmp(object(), "nas.local", 161, object())
+    for _ in range(2):
+        with pytest.raises(SnmpError):
+            await client.get(["1.3.6.1.2.1.1.1.0"])
+    assert _FakeTarget.created == 2

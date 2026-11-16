@@ -113,6 +113,7 @@ def _raise_indication(err_ind: Any) -> None:
 
 
 MAX_CONCURRENT_REQUESTS = 4
+MAX_OIDS_PER_GET = 8  # varbinds per GET PDU
 
 
 class AsustorSnmp:
@@ -146,20 +147,34 @@ class AsustorSnmp:
         return self._target
 
     async def get(self, oids: list[str]) -> dict[str, Any]:
-        """GET several scalar OIDs. Missing OIDs are omitted."""
-        transport = await self._transport()
-        async with self._gate:
-            err_ind, err_stat, _idx, var_binds = await get_cmd(
-                self._engine,
-                self._auth,
-                transport,
-                self._ctx,
-                *[ObjectType(ObjectIdentity(o)) for o in oids],
-            )
-        if err_ind:
-            _raise_indication(err_ind)
-        if err_stat:
-            raise SnmpError(err_stat.prettyPrint())
+        """GET several scalar OIDs. Missing OIDs are omitted.
+
+        Large requests are split so that no single PDU risks exceeding an agent's message size.
+        """
+        chunks = [oids[i : i + MAX_OIDS_PER_GET] for i in range(0, len(oids), MAX_OIDS_PER_GET)]
+        out: dict[str, Any] = {}
+        for part in await asyncio.gather(*(self._get_chunk(chunk) for chunk in chunks)):
+            out.update(part)
+        return out
+
+    async def _get_chunk(self, oids: list[str]) -> dict[str, Any]:
+        try:
+            transport = await self._transport()
+            async with self._gate:
+                err_ind, err_stat, _idx, var_binds = await get_cmd(
+                    self._engine,
+                    self._auth,
+                    transport,
+                    self._ctx,
+                    *[ObjectType(ObjectIdentity(o)) for o in oids],
+                )
+            if err_ind:
+                _raise_indication(err_ind)
+            if err_stat:
+                raise SnmpError(err_stat.prettyPrint())
+        except SnmpError:
+            self._target = None  # re-resolve the host on the next request (its IP may have changed)
+            raise
         out: dict[str, Any] = {}
         for oid, val in var_binds:
             if val.__class__.__name__ in ("NoSuchObject", "NoSuchInstance", "EndOfMibView"):
@@ -171,24 +186,28 @@ class AsustorSnmp:
         """Walk a subtree; returns {index_suffix: value}."""
         out: dict[str, Any] = {}
         prefix = base + "."
-        transport = await self._transport()
-        async with self._gate:
-            async for err_ind, err_stat, _idx, var_binds in walk_cmd(
-                self._engine,
-                self._auth,
-                transport,
-                self._ctx,
-                ObjectType(ObjectIdentity(base)),
-                lexicographicMode=False,
-            ):
-                if err_ind:
-                    _raise_indication(err_ind)
-                if err_stat:
-                    raise SnmpError(err_stat.prettyPrint())
-                for oid, val in var_binds:
-                    s = str(oid)
-                    if s.startswith(prefix):
-                        out[s[len(prefix):]] = val
+        try:
+            transport = await self._transport()
+            async with self._gate:
+                async for err_ind, err_stat, _idx, var_binds in walk_cmd(
+                    self._engine,
+                    self._auth,
+                    transport,
+                    self._ctx,
+                    ObjectType(ObjectIdentity(base)),
+                    lexicographicMode=False,
+                ):
+                    if err_ind:
+                        _raise_indication(err_ind)
+                    if err_stat:
+                        raise SnmpError(err_stat.prettyPrint())
+                    for oid, val in var_binds:
+                        s = str(oid)
+                        if s.startswith(prefix):
+                            out[s[len(prefix):]] = val
+        except SnmpError:
+            self._target = None  # re-resolve the host on the next request (its IP may have changed)
+            raise
         return out
 
 

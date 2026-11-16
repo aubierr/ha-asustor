@@ -29,7 +29,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.async_on_unload(engine.close_dispatcher)
 
     # Create the NAS (parent) device first so disk/volume/interface/UPS devices can link to it.
-    dr.async_get(hass).async_get_or_create(
+    registry = dr.async_get(hass)
+    parent = registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, entry.entry_id)},
         name=entry.title,
@@ -39,6 +40,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hw_version=coordinator.hw_version,
         serial_number=coordinator.serial,
     )
+
+    @callback
+    def _sync_device() -> None:
+        """Refresh model / versions on the NAS device (e.g. after an ADM upgrade)."""
+        changes = {
+            "model": coordinator.model,
+            "sw_version": coordinator.sw_version,
+            "hw_version": coordinator.hw_version,
+            "serial_number": coordinator.serial,
+        }
+        registry.async_update_device(parent.id, **{k: v for k, v in changes.items() if v is not None})
+
+    entry.async_on_unload(coordinator.async_add_listener(_sync_device))
 
     # Drop devices of removed disks / volumes / interfaces / UPS after a few absent polls.
     missing: dict[str, int] = {}

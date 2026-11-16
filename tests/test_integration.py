@@ -13,7 +13,7 @@ from custom_components.asustor.binary_sensor import (
     ups_on_battery,
     volume_problem,
 )
-from custom_components.asustor.const import DOMAIN, OID_HR_STORAGE_SIZE, OID_IF_HC_IN
+from custom_components.asustor.const import DOMAIN, OID_AS_ADM_VERSION, OID_HR_STORAGE_SIZE, OID_IF_HC_IN
 from custom_components.asustor.device import prune_stale_devices
 from custom_components.asustor.snmp import SnmpError
 from custom_components.asustor.update import update_available
@@ -192,6 +192,54 @@ async def test_ups_creates_a_device_and_binary_sensors(hass, make_entry, fake_sn
     assert _state(hass, ents, "ups1_input_voltage").state == "230"
 
 
+def _ups_walks(fake_snmp, present: bool) -> None:
+    for col, kind, value in ((2, "s", "APC"), (3, "s", "Back-UPS"), (7, "s", "OL")):
+        fake_snmp.walks[f"{UPS}.{col}"] = {"1": [kind, value]} if present else {}
+
+
+async def test_failed_ups_read_does_not_look_like_an_unplugged_ups(hass, make_entry, fake_snmp):
+    _ups_walks(fake_snmp, True)
+    entry = await make_entry()
+    assert "1" in entry.runtime_data.data["ups"]
+    real_walk = fake_snmp.walk
+
+    async def flaky(base):
+        if base.startswith(UPS):
+            raise SnmpError("timeout")
+        return await real_walk(base)
+
+    fake_snmp.walk = flaky
+    for _ in range(2):  # a transient failure keeps the previous rows...
+        await entry.runtime_data.async_refresh()
+        assert "1" in entry.runtime_data.data["ups"]
+    await entry.runtime_data.async_refresh()  # ...but not forever
+    assert entry.runtime_data.data["ups"] == {}
+
+
+async def test_entities_are_recreated_when_a_removed_device_comes_back(hass, make_entry, fake_snmp):
+    _ups_walks(fake_snmp, True)
+    entry = await make_entry()
+    assert "ups1_on_battery" in _entities(hass, entry)
+    _ups_walks(fake_snmp, False)
+    for _ in range(3):
+        await entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert "ups1_on_battery" not in _entities(hass, entry)
+    _ups_walks(fake_snmp, True)
+    await entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert "ups1_on_battery" in _entities(hass, entry)
+
+
+async def test_nas_device_version_follows_adm_upgrades(hass, make_entry, fake_snmp):
+    entry = await make_entry()
+    fake_snmp.set_get(OID_AS_ADM_VERSION, "s", "9.9.9")
+    await entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    assert device.sw_version == "9.9.9"
+
+
 async def test_unreachable_nas_fails_setup_and_retries(hass, make_entry, fake_snmp):
     fake_snmp.fail()
     entry = await make_entry()
@@ -277,7 +325,8 @@ def test_link_and_ups_flags():
 
 @pytest.mark.parametrize(("text", "expected"), [
     ("The ADM is latest version", False), ("Unavailable", False), ("Available", True),
-    ("A new version is available", True), ("", None), (None, None),
+    ("A new version is available", True), ("Not available", False), ("Checking...", None),
+    ("Mise à jour disponible", None), ("", None), (None, None),
 ])
 def test_update_available(text, expected):
     assert update_available(text) is expected

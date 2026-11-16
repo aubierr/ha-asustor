@@ -101,7 +101,7 @@ async def async_setup_entry(
     @callback
     def _discover() -> None:
         new = [
-            NasBinarySensor(coordinator, entry, desc, group, idx, uid, fn, attrs)
+            NasBinarySensor(coordinator, entry, desc, group, idx, uid, fn, attrs, known)
             for uid, group, idx, desc, fn, attrs in _specs(coordinator.data)
             if uid not in known
         ]
@@ -118,13 +118,20 @@ class NasBinarySensor(CoordinatorEntity[AsustorCoordinator], BinarySensorEntity)
 
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator, entry, description, group, idx, uid, fn, attrs=()) -> None:
+    def __init__(self, coordinator, entry, description, group, idx, uid, fn, attrs=(), known=None) -> None:
         super().__init__(coordinator)
+        self._known = known
         self.entity_description = description
         self._group, self._idx, self._fn, self._attrs = group, idx, fn, attrs
         self.unique_id_suffix = uid
         self._attr_unique_id = f"{entry.entry_id}_{uid}"
         self._attr_device_info = device_info(coordinator, entry, group, idx)
+
+    async def async_will_remove_from_hass(self) -> None:
+        # Forget the id so the entity is created again if its device comes back.
+        if self._known is not None:
+            self._known.discard(self.unique_id_suffix)
+        await super().async_will_remove_from_hass()
 
     def _row(self) -> Row:
         return self.coordinator.data[self._group].get(self._idx, {})
